@@ -15,8 +15,8 @@ public class ChessPiece {
     private final PieceType type;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
-        this.pieceColor = pieceColor;
-        this.type = type;
+        this.pieceColor=pieceColor;
+        this.type=type;
     }
 
     @Override
@@ -66,6 +66,29 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return new ArrayList<>();
+        switch (type) {
+            case PAWN -> {
+                return new ArrayList<>();
+            }
+            case ROOK -> {
+                return new ArrayList<>();
+            }
+            case KNIGHT -> {
+                return new ArrayList<>();
+            }
+            case BISHOP -> {
+                return new ArrayList<>();
+            }
+            case QUEEN -> {
+                return new ArrayList<>();
+            }
+            case KING -> {
+                return new ArrayList<>();
+            }
+            default -> {
+                return new ArrayList<>();
+            }
+        }
     }
 }
+
