@@ -71,13 +71,15 @@ public class ChessPiece {
                 return new ArrayList<>();
             }
             case ROOK -> {
-                return new ArrayList<>();
+                var rookMovesCalculator = new RookMovesCalculator();
+                return rookMovesCalculator.calculateMoves(board, myPosition, pieceColor);
             }
             case KNIGHT -> {
                 return new ArrayList<>();
             }
             case BISHOP -> {
-                return new ArrayList<>();
+                var bishopMovesCalculator = new BishopMovesCalculator();
+                return bishopMovesCalculator.calculateMoves(board, myPosition, pieceColor);
             }
             case QUEEN -> {
                 return new ArrayList<>();
