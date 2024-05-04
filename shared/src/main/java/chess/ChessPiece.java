@@ -68,24 +68,28 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         switch (type) {
             case PAWN -> {
-                return new ArrayList<>();
+                var pawnMovesCalculator = new PawnMovesCalculator();
+                return pawnMovesCalculator.calculateMoves(board, myPosition, pieceColor);
             }
             case ROOK -> {
                 var rookMovesCalculator = new RookMovesCalculator();
                 return rookMovesCalculator.calculateMoves(board, myPosition, pieceColor);
             }
             case KNIGHT -> {
-                return new ArrayList<>();
+                var knightMovesCalculator = new KnightMovesCalculator();
+                return knightMovesCalculator.calculateMoves(board, myPosition, pieceColor);
             }
             case BISHOP -> {
                 var bishopMovesCalculator = new BishopMovesCalculator();
                 return bishopMovesCalculator.calculateMoves(board, myPosition, pieceColor);
             }
             case QUEEN -> {
-                return new ArrayList<>();
+                var queenMovesCalculator = new QueenMovesCalculator();
+                return queenMovesCalculator.calculateMoves(board, myPosition, pieceColor);
             }
             case KING -> {
-                return new ArrayList<>();
+                var kingMovesCalculator = new KingMovesCalculator();
+                return kingMovesCalculator.calculateMoves(board, myPosition, pieceColor);
             }
             default -> {
                 return new ArrayList<>();
