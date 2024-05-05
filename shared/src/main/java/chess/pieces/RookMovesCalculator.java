@@ -62,7 +62,6 @@ public class RookMovesCalculator {
       }
     }
 
-    System.out.println("moves: " + moves);
     return moves;
   }
 }
