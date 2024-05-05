@@ -1,9 +1,6 @@
 package chess.pieces;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessMove;
-import chess.ChessPosition;
+import chess.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,7 +8,6 @@ import java.util.Collection;
 public class QueenMovesCalculator {
   public Collection<ChessMove> calculateMoves(ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor pieceColor) {
     var moves = new ArrayList<ChessMove>();
-    System.out.println("myPosition: " + myPosition.getRow() + " " + myPosition.getColumn());
 
     // Iterate from the current row to row 1
     for (int i = myPosition.getRow() - 1; i >= 1; i--) {
@@ -114,8 +110,6 @@ public class QueenMovesCalculator {
         break; // Stop iteration if blocked by a piece of the same color
       }
     }
-
-    System.out.println("moves: " + moves);
     return moves;
   }
 }

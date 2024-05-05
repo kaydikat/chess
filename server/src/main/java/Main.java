@@ -1,5 +1,5 @@
 import chess.*;
-import chess.pieces.ChessPiece;
+import chess.ChessPiece;
 
 public class Main {
     public static void main(String[] args) {

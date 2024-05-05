@@ -8,7 +8,6 @@ import java.util.Collection;
 public class RookMovesCalculator {
   public Collection<ChessMove> calculateMoves(ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor pieceColor) {
     var moves = new ArrayList<ChessMove>();
-    System.out.println("myPosition: " + myPosition.getRow() + " " + myPosition.getColumn());
 
     // Iterate from the current row to row 1
     for (int i = myPosition.getRow() - 1; i >= 1; i--) {

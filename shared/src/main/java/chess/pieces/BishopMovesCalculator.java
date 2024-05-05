@@ -59,7 +59,6 @@ public class BishopMovesCalculator {
             }
         }
 
-        System.out.println("moves: " + moves);
         return moves;
     }
 }
