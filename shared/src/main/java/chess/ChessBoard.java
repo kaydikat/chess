@@ -11,7 +11,6 @@ import java.util.Arrays;
 public class ChessBoard {
     private final ChessPiece[][] squares = new ChessPiece[8][8];
     public ChessBoard() {
-
     }
     @Override
     public boolean equals(Object o) {

@@ -10,8 +10,10 @@ import java.util.Collection;
  */
 public class ChessGame {
     private TeamColor teamTurn;
+    private ChessBoard chessBoard;
     public ChessGame() {
         this.teamTurn = TeamColor.WHITE;
+        this.chessBoard=new ChessBoard();
     }
 
     /**
@@ -66,7 +68,11 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        //apply each move one at a time to see if the king is in check
+        //if the king is in check, return true
+        //iterate through opponent's move and see if any of their end position is where the king is
+
+        return true;
     }
 
     /**
@@ -96,7 +102,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        board.resetBoard();
     }
 
     /**
@@ -105,6 +111,6 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return this.chessBoard;
     }
 }
