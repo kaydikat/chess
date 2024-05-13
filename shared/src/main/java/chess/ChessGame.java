@@ -48,7 +48,11 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        if (isInCheck(teamTurn)) {
+            throw new RuntimeException("Not implemented");
+        } else {
+            return chessBoard.getPiece(startPosition).pieceMoves(chessBoard, startPosition);
+        }
     }
 
     /**
@@ -58,7 +62,53 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        ChessPosition start = move.getStartPosition();
+        ChessPosition end = move.getEndPosition();
+        ChessPiece.PieceType promotionPiece = move.getPromotionPiece();
+        ChessPiece piece = chessBoard.getPiece(start);
+
+        if (piece == null) {
+            throw new InvalidMoveException();
+        }
+
+        // Check if it's the current team's turn
+        if (piece.getTeamColor() != teamTurn) {
+            throw new InvalidMoveException();
+        }
+
+        // Calculate valid moves for the piece
+        Collection<ChessMove> validMoves = piece.pieceMoves(chessBoard, start);
+        if (!validMoves.contains(move)) {
+            throw new InvalidMoveException();
+        }
+
+        // Capture opponent's piece if it exists at the end position
+        ChessPiece opponentPiece = chessBoard.getPiece(end);
+        if (opponentPiece != null && opponentPiece.getTeamColor() != teamTurn) {
+            // Capture opponent's piece
+            chessBoard.addPiece(start, null);
+        }
+
+        // Execute the move by updating the chessboard
+        chessBoard.addPiece(new ChessPosition(end.getRow(), end.getColumn()), piece);
+
+        // Handle pawn promotion
+        if (promotionPiece != null && piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            // Check if the pawn reaches the opposite end of the board
+            if ((piece.getTeamColor() == ChessGame.TeamColor.WHITE && end.getRow() == 8) ||
+                    (piece.getTeamColor() == ChessGame.TeamColor.BLACK && end.getRow() == 1)) {
+                // Promote the pawn
+                chessBoard.addPiece(end, new ChessPiece(piece.getTeamColor(), promotionPiece));
+            }
+        }
+
+        // Check if the current team is in check after the move
+        if (isInCheck(teamTurn)) {
+            // Revert the move or throw an exception
+            // For now, let's just throw an exception
+            throw new InvalidMoveException();
+        }
+        teamTurn = (teamTurn == ChessGame.TeamColor.WHITE) ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
     }
 
     /**
@@ -123,7 +173,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        board.resetBoard();
+        this.chessBoard = board;
     }
 
     /**
