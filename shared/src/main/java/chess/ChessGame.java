@@ -13,7 +13,7 @@ public class ChessGame {
     private ChessBoard chessBoard;
     public ChessGame() {
         this.teamTurn = TeamColor.WHITE;
-        this.chessBoard=new ChessBoard();
+        this.chessBoard = new ChessBoard();
     }
 
     /**
@@ -48,6 +48,9 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+        if (chessBoard.getPiece(startPosition) == null) {
+            return null;
+        }
         if (isInCheck(teamTurn)) {
             throw new RuntimeException("Not implemented");
         } else {
@@ -104,8 +107,6 @@ public class ChessGame {
 
         // Check if the current team is in check after the move
         if (isInCheck(teamTurn)) {
-            // Revert the move or throw an exception
-            // For now, let's just throw an exception
             throw new InvalidMoveException();
         }
         teamTurn = (teamTurn == ChessGame.TeamColor.WHITE) ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
@@ -123,7 +124,7 @@ public class ChessGame {
             for (int col = 0; col < 8; col++) {
                 ChessPiece piece = chessBoard.getPiece(new ChessPosition(row + 1, col + 1));
                 if (piece != null && piece.getTeamColor() != teamColor) {
-                    Collection<ChessMove> moves = piece.pieceMoves(chessBoard, new ChessPosition(row + 1, col + 1));
+                    Collection<ChessMove> moves = piece.pieceMoves(chessBoard, new ChessPosition(row+1, col+1));
                     for (ChessMove move : moves) {
                         if (move.getEndPosition().equals(kingPosition)) {
                             return true; // King is in check
