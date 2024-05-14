@@ -13,6 +13,19 @@ public class ChessBoard {
     public ChessBoard() {
     }
     @Override
+    protected Object clone() {
+        ChessBoard clonedBoard = new ChessBoard();
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                ChessPiece piece = this.squares[row][col];
+                if (piece != null) {
+                    clonedBoard.squares[row][col] = (ChessPiece) piece.clone();
+                }
+            }
+        }
+        return clonedBoard;
+    }
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

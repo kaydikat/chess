@@ -20,6 +20,10 @@ public class ChessPiece {
         this.pieceColor=pieceColor;
         this.type=type;
     }
+    @Override
+    protected Object clone() {
+        return new ChessPiece(this.pieceColor, this.type);
+    }
 
     @Override
     public boolean equals(Object o) {
