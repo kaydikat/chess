@@ -52,7 +52,31 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         Collection<ChessMove> validMoves = new ArrayList<>();
 
+        // Iterate through each square on the board
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                ChessPiece piece = chessBoard.getPiece(new ChessPosition(row + 1, col + 1));
 
+                // Check if the square contains a piece of the current team
+                if (piece != null && piece.getTeamColor() == teamTurn) {
+                    // Get valid moves for the piece
+                    Collection<ChessMove> moves = piece.pieceMoves(chessBoard, new ChessPosition(row + 1, col + 1));
+
+                    // Clone the board and apply each move to check if it leads to being in check
+                    for (ChessMove move : moves) {
+                        ChessBoard clonedBoard =(ChessBoard) chessBoard.clone(); // Assuming you have implemented the clone method
+                      // Apply the move to the cloned board
+                      clonedBoard.makeMove(move);
+
+                      // Check if the king is in check after applying the move
+                      if (!isInCheck(teamTurn)) {
+                          // Move doesn't result in check, so add it to valid moves
+                          validMoves.add(move);
+                      }
+                    }
+                }
+            }
+        }
 
         return validMoves;
     }
@@ -77,24 +101,16 @@ public class ChessGame {
         if (piece.getTeamColor() != teamTurn) {
             throw new InvalidMoveException();
         }
-
-        // Calculate valid moves for the piece
         Collection<ChessMove> validMoves = piece.pieceMoves(chessBoard, start);
         if (!validMoves.contains(move)) {
             throw new InvalidMoveException();
         }
-
-        // Capture opponent's piece if it exists at the end position
         ChessPiece opponentPiece = chessBoard.getPiece(end);
         if (opponentPiece != null && opponentPiece.getTeamColor() != teamTurn) {
             // Capture opponent's piece
             chessBoard.addPiece(start, null);
         }
-
-        // Execute the move by updating the chessboard
-        chessBoard.addPiece(new ChessPosition(end.getRow(), end.getColumn()), piece);
-
-        // Handle pawn promotion
+        chessBoard.makeMove(move);
         if (promotionPiece != null && piece.getPieceType() == ChessPiece.PieceType.PAWN) {
             // Check if the pawn reaches the opposite end of the board
             if ((piece.getTeamColor() == ChessGame.TeamColor.WHITE && end.getRow() == 8) ||
@@ -103,12 +119,11 @@ public class ChessGame {
                 chessBoard.addPiece(end, new ChessPiece(piece.getTeamColor(), promotionPiece));
             }
         }
-
-        // Check if the current team is in check after the move
         if (isInCheck(teamTurn)) {
             throw new InvalidMoveException();
         }
         teamTurn = (teamTurn == ChessGame.TeamColor.WHITE) ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
+
     }
 
     /**

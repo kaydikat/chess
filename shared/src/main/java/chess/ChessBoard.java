@@ -9,9 +9,22 @@ import java.util.Arrays;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    private final ChessPiece[][] squares = new ChessPiece[8][8];
+    private final ChessPiece[][] squares=new ChessPiece[8][8];
+
     public ChessBoard() {
     }
+
+    public void makeMove(ChessMove move) {
+        ChessPosition start=move.getStartPosition();
+        ChessPosition end=move.getEndPosition();
+        ChessPiece piece=squares[start.getRow() - 1][start.getColumn() - 1];
+
+        // Update the board by moving the piece
+        squares[end.getRow() - 1][end.getColumn() - 1]=piece;
+        squares[start.getRow() - 1][start.getColumn() - 1]=null;
+
+        // Additional logic for capturing pieces, pawn promotion, etc.
+}
     @Override
     protected Object clone() {
         ChessBoard clonedBoard = new ChessBoard();
