@@ -14,7 +14,11 @@ public class ChessBoard {
     public ChessBoard() {
     }
 
-    public void makeMove(ChessMove move) {
+//    public void makeMove2(ChessMove move) throws InvalidMoveException {
+//        chessGame.makeMove(move);
+//    }
+
+    public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPosition start=move.getStartPosition();
         ChessPosition end=move.getEndPosition();
         ChessPiece piece=squares[start.getRow() - 1][start.getColumn() - 1];
