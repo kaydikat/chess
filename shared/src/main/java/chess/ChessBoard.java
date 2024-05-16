@@ -14,20 +14,14 @@ public class ChessBoard {
     public ChessBoard() {
     }
 
-//    public void makeMove2(ChessMove move) throws InvalidMoveException {
-//        chessGame.makeMove(move);
-//    }
-
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPosition start=move.getStartPosition();
         ChessPosition end=move.getEndPosition();
         ChessPiece piece=squares[start.getRow() - 1][start.getColumn() - 1];
 
-        // Update the board by moving the piece
         squares[end.getRow() - 1][end.getColumn() - 1]=piece;
         squares[start.getRow() - 1][start.getColumn() - 1]=null;
 
-        // Additional logic for capturing pieces, pawn promotion, etc.
 }
     @Override
     protected Object clone() {
