@@ -117,7 +117,7 @@ public class ChessGame {
         ChessPiece opponentPiece = chessBoard.getPiece(end);
         if (opponentPiece != null && opponentPiece.getTeamColor() != teamTurn) {
             // Capture opponent's piece
-            chessBoard.addPiece(start, null);
+            chessBoard.addPiece(end, null);
         }
         chessBoard.makeMove(move);
         if (promotionPiece != null && piece.getPieceType() == ChessPiece.PieceType.PAWN) {
@@ -188,7 +188,7 @@ public class ChessGame {
                 ChessPiece piece = chessBoard.getPiece(new ChessPosition(row + 1, col + 1));
 
                 if (piece != null && piece.getTeamColor() == teamColor) {
-                    Collection<ChessMove> moves = validMoves(new ChessPosition(row + 1, col ));
+                    Collection<ChessMove> moves = validMoves(new ChessPosition(row + 1, col + 1));
 
                     for (ChessMove move : moves) {
                         try {
