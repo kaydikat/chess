@@ -31,9 +31,9 @@ public class ValidMovesTests {
         assertMoves(game, validMoves, knightPosition);
 
         // Queen Moves
-//        ChessPosition queenPosition = new ChessPosition(2, 4);
-//        validMoves = loadMoves(queenPosition, new int[][]{{3, 5}, {4, 4}});
-//        assertMoves(game, validMoves, queenPosition);
+        ChessPosition queenPosition = new ChessPosition(2, 4);
+        validMoves = loadMoves(queenPosition, new int[][]{{3, 5}, {4, 4}});
+        assertMoves(game, validMoves, queenPosition);
     }
 
 

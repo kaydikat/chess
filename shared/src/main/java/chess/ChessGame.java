@@ -73,14 +73,21 @@ public class ChessGame {
             // Iterate over each valid move
             for (ChessMove move : moves) {
                 ChessGame clonedGame = (ChessGame) this.clone(); // Assuming you have implemented the clone method in ChessGame
+                //teamTurn =ChessGame.TeamColor.BLACK;
+                if (piece.getTeamColor() != TeamColor.WHITE) {
+                    clonedGame.setTeamTurn(TeamColor.BLACK);
+                }
 
                 try {
 
                     // Attempt to make the move on the cloned game
                     clonedGame.makeMove(move);
+                    if (piece.getTeamColor() != TeamColor.WHITE) {
+                        clonedGame.setTeamTurn(TeamColor.BLACK);
+                    }
 
                     // If the move doesn't result in the team being in check, add it to valid moves
-                    if (!clonedGame.isInCheck(teamTurn)) {
+                    if (!clonedGame.isInCheck(clonedGame.teamTurn)) {
                         validMoves.add(move);
                     }
                 } catch (InvalidMoveException e) {
@@ -180,32 +187,6 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        if (!isInCheck(teamColor)) {
-            return false; // Team is not in check
-        }
-        if (!validMoves(findKingPosition(teamColor)).isEmpty()) {
-            return false; // Team is in checkmate
-        } else {
-            for (int row = 0; row < 8; row++) {
-                for (int col = 0; col < 8; col++) {
-                    ChessPiece piece = chessBoard.getPiece(new ChessPosition(row + 1, col + 1));
-                    if (piece != null && piece.getTeamColor() == teamColor) {
-                        Collection<ChessMove> moves = piece.pieceMoves(chessBoard, new ChessPosition(row + 1, col + 1));
-                        for (ChessMove move : moves) {
-                            ChessGame clonedGame = (ChessGame) this.clone();
-                            try {
-                                clonedGame.makeMove(move);
-                                if (!clonedGame.isInCheck(teamColor)) {
-                                    return false; // Team is not in checkmate
-                                }
-                            } catch (InvalidMoveException e) {
-                                // Invalid move, do nothing
-                            }
-                        }
-                    }
-                }
-            }
-        }
         return true;
     }
 
@@ -217,23 +198,6 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                ChessPiece piece = chessBoard.getPiece(new ChessPosition(row + 1, col + 1));
-
-                // Check if the piece belongs to the specified team
-                if (piece != null && piece.getTeamColor() == teamColor) {
-                    // Get valid moves for the piece
-                    Collection<ChessMove> moves = piece.pieceMoves(chessBoard, new ChessPosition(row + 1, col + 1));
-
-                    // If there are valid moves for any piece of the specified team, it's not stalemate
-                    if (!moves.isEmpty()) {
-                        return false;
-                    }
-                }
-            }
-        }
-        // If no piece of the specified team has valid moves, it's stalemate
         return true;
     }
 
