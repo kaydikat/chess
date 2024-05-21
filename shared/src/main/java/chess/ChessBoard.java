@@ -10,6 +10,12 @@ import java.util.Arrays;
  */
 public class ChessBoard {
     private final ChessPiece[][] squares=new ChessPiece[8][8];
+    private final int rookMoves = 0;
+    private final int kingMoves = 0;
+
+    public int getRookAndKingMoves() {
+        return rookMoves + kingMoves;
+    }
 
     public ChessBoard() {
     }

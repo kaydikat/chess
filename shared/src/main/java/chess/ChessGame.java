@@ -51,6 +51,7 @@ public class ChessGame {
         return clonedGame;
     }
 
+
     /**
      * Gets a valid moves for a piece at the given location
      *
