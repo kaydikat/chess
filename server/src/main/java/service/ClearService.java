@@ -4,9 +4,10 @@ import dataaccess.AuthDaoInMemory;
 import dataaccess.UserDaoInMemory;
 import dataaccess.GameDaoInMemory;
 import request.ClearRequest;
+import result.ClearResult;
 
 public class ClearService {
-    public void clear(ClearRequest request) {
+    public ClearResult clear(ClearRequest request) {
         AuthDaoInMemory authDao = new AuthDaoInMemory();
         UserDaoInMemory userDao = new UserDaoInMemory();
         GameDaoInMemory gameDao = new GameDaoInMemory();
@@ -14,5 +15,7 @@ public class ClearService {
         authDao.clear();
         userDao.clear();
         gameDao.clear();
+
+        return new ClearResult(true, "Clear succeeded");
     }
 }
