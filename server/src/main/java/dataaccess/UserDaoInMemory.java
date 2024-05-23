@@ -22,7 +22,7 @@ public class UserDaoInMemory {
       }
       return user;
     }
-    public void clear() throws DataAccessException {
+    public void clear() {
       users.clear();
     }
 }

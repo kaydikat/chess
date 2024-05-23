@@ -26,8 +26,4 @@ public class Server {
         Spark.get("/hello", (req, res) -> "Hello!");
     }
 
-    public static void main(String[] args) {
-        Server server = new Server();
-        server.run(8080);
-    }
 }

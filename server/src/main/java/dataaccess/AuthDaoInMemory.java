@@ -2,7 +2,6 @@ package dataaccess;
 
 import model.AuthData;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.security.SecureRandom;
@@ -10,7 +9,7 @@ import java.security.SecureRandom;
 public class AuthDaoInMemory {
   private final Map<String, AuthData> auths = new HashMap<>();
 
-  public void createAuth(String username) throws DataAccessException {
+  public void createAuth(String username) {
     String authToken = String.valueOf(new SecureRandom());
     AuthData auth = new AuthData(authToken, username);
 
@@ -32,7 +31,7 @@ public class AuthDaoInMemory {
     auths.remove(authToken);
     auths.remove(auth.username());
   }
-  void clear() {
+  public void clear() {
     auths.clear();
   }
 }
