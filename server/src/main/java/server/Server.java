@@ -1,5 +1,6 @@
 package server;
 
+import handlers.ClearHandler;
 import spark.*;
 
 public class Server {
@@ -24,6 +25,7 @@ public class Server {
     }
     private static void createEndpoints() {
         Spark.get("/hello", (req, res) -> "Hello!");
+        Spark.delete("/clear", (req, res) -> (new ClearHandler().handleRequest(req.body())));
     }
 
 }
