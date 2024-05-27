@@ -19,6 +19,7 @@ public class RegisterService {
     AuthDaoInMemory authDao = new AuthDaoInMemory();
     authDao.createAuth(request.username());
     String authToken = authDao.getAuth(request.username()).authToken();
+    System.out.println("authToken: " + authToken);
 
     return new RegisterResult(request.username(), authToken);
   };

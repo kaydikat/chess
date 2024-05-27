@@ -1,7 +1,6 @@
 package dataaccess;
 
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,11 +15,7 @@ public class UserDaoInMemory {
         users.put(user.username(), user);
     }
     public UserData getUser(String username) throws DataAccessException {
-      UserData user = users.get(username);
-      if (user == null) {
-        return null;
-      }
-      return user;
+      return users.get(username);
     }
     public void clear() {
       users.clear();

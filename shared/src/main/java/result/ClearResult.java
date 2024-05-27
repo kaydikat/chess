@@ -1,3 +1,3 @@
 package result;
 
-public record ClearResult(boolean success, String message) {}
+public record ClearResult() {}

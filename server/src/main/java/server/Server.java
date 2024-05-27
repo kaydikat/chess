@@ -32,15 +32,7 @@ public class Server {
         Spark.post("/user", (req, res) ->
                 (new RegisterHandler()).handle(req, res));
 
-
-        Spark.post("/session", (req, res) -> {
-            String reqData = req.body();
-
-            LoginHandler loginHandler = new LoginHandler();
-            String result = loginHandler.handleLogin(reqData);
-            res.type("application/json");
-
-            return result;
-        });
+        Spark.post("/session", (req, res) ->
+                (new LoginHandler()).handle(req, res));
     }
 }

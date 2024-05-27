@@ -16,6 +16,6 @@ public class ClearService {
         userDao.clear();
         gameDao.clear();
 
-        return new ClearResult(true, "Clear succeeded");
+        return new ClearResult();
     }
 }
