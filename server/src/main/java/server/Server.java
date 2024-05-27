@@ -1,6 +1,9 @@
 package server;
 
+import dataaccess.DataAccessException;
 import handlers.ClearHandler;
+import handlers.LoginHandler;
+import handlers.RegisterHandler;
 import spark.*;
 
 public class Server {
@@ -25,8 +28,19 @@ public class Server {
     }
     private static void createEndpoints() {
         Spark.get("/hello", (req, res) -> "Hello!");
-        Spark.delete("/clear", (req, res) -> (new ClearHandler().handleRequest(req.body())));
+        Spark.delete("/db", (req, res) -> (new ClearHandler().handleRequest(req.body())));
+        Spark.post("/user", (req, res) ->
+                (new RegisterHandler()).handle(req, res));
 
+
+        Spark.post("/session", (req, res) -> {
+            String reqData = req.body();
+
+            LoginHandler loginHandler = new LoginHandler();
+            String result = loginHandler.handleLogin(reqData);
+            res.type("application/json");
+
+            return result;
+        });
     }
-
 }

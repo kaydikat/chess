@@ -4,13 +4,13 @@ import model.AuthData;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.security.SecureRandom;
+import java.util.UUID;
 
 public class AuthDaoInMemory {
   private final Map<String, AuthData> auths = new HashMap<>();
 
   public void createAuth(String username) {
-    String authToken = String.valueOf(new SecureRandom());
+    String authToken = UUID.randomUUID().toString();
     AuthData auth = new AuthData(authToken, username);
 
     auths.put(authToken, auth);
