@@ -19,10 +19,9 @@ public class CreateGameService {
   public CreateGameResult createGame(CreateGameRequest request) throws DataAccessException {
     if (checkAuth(request.authToken())) {
       GameData game = gameDao.createGame(request.gameName());
-      Integer gameID = gameDao.createGameID(game);
-      return new CreateGameResult(gameID);
+      return new CreateGameResult(game.gameID(), null);
     } else {
-      return new CreateGameResult(null);
+      return new CreateGameResult(null, "error: invalid authorization");
     }
   }
 }

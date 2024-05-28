@@ -2,8 +2,11 @@ package service;
 
 import dataaccess.DataAccessException;
 import dataaccess.GameDaoInMemory;
+import model.GameData;
 import request.ListGamesRequest;
 import result.ListGamesResult;
+
+import java.util.Collection;
 
 import static authentication.CheckAuth.checkAuth;
 
@@ -14,14 +17,12 @@ public class ListGamesService {
   public ListGamesService() {
     this.gameDao = GameDaoInMemory.getInstance();
   }
-  public ListGamesResult listGames(ListGamesRequest request) throws DataAccessException {
-    if (request == null) {
-      return new ListGamesResult(null);
-    }
+  public ListGamesResult listGames(ListGamesRequest request) {
     if (checkAuth(request.authToken())) {
-        return new ListGamesResult(gameDao.listGames());
-        } else {
-        return new ListGamesResult(null);
+      Collection<GameData> games = gameDao.listGames();
+      return new ListGamesResult(games,null);
+    } else {
+      return new ListGamesResult(null,"error: invalid auth token");
     }
   }
 }

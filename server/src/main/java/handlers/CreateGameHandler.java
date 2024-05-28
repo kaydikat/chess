@@ -22,6 +22,9 @@ public class CreateGameHandler implements Route {
       CreateGameRequest request = gson.fromJson(req.body(), CreateGameRequest.class);
       request = new CreateGameRequest(authToken, request.gameName());
       CreateGameResult result = createGameService.createGame(request);
+      if (result.gameID() == null) {
+        res.status(401);
+      }
       return gson.toJson(result);
     }
 }

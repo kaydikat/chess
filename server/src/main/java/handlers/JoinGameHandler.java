@@ -23,6 +23,16 @@ public class JoinGameHandler implements Route {
     JoinGameRequest request = gson.fromJson(req.body(), JoinGameRequest.class);
     request = new JoinGameRequest(authToken, request.playerColor(), request.gameID());
     JoinGameResult result = joinGameService.joinGame(request);
+    if (result.message() == null) {
+      res.status(200);
+    } else if (result.message().equals("error: invalid auth token")) {
+      res.status(401);
+    } else if (result.message().equals("error: color already exists")) {
+      res.status(403);
+    }
+    else if (result.message().equals("error: bad game ID") || result.message().equals("error: invalid player color") || result.message().equals("error: invalid player color specified")){
+      res.status(400);
+    }
 
     return gson.toJson(result);
 

@@ -1,4 +1,3 @@
 package request;
 
-public class ClearRequest {
-}
+public class ClearRequest {}

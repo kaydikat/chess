@@ -19,7 +19,11 @@ public class UserDaoInMemory {
     return instance;
   }
 
-    public void createUser(UserData user) throws DataAccessException {
+  public static void resetInstance() {
+    instance = new UserDaoInMemory();
+  }
+
+  public void createUser(UserData user) throws DataAccessException {
       if (users.containsKey(user.username())) {
         throw new DataAccessException("User already exists");
       }
@@ -28,6 +32,7 @@ public class UserDaoInMemory {
     public UserData getUser(String username) throws DataAccessException {
       return users.get(username);
     }
+
     public void clear() {
       users.clear();
     }

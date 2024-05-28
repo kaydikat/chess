@@ -2,6 +2,7 @@ package dataaccess;
 
 import chess.ChessGame;
 import model.GameData;
+import model.UserData;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,6 +23,10 @@ public class GameDaoInMemory {
   }
   private final Random random = new Random();
 
+  public static void resetInstance() {
+    instance = new GameDaoInMemory();
+  }
+
   public Integer createGameID(GameData game) {
     int newGameID = 1000 + random.nextInt(9000);
     games.put(newGameID, game);
@@ -29,18 +34,18 @@ public class GameDaoInMemory {
   }
 
   public GameData createGame(String gameName) throws DataAccessException {
-    GameData game = new GameData(null, null, null, gameName, new ChessGame());
+    ChessGame newChessGame = new ChessGame();
+    GameData game = new GameData(null, null, null, gameName, newChessGame);
+    Integer gameID = createGameID(game);
+    game = new GameData(gameID, null, null, gameName, newChessGame);
     return game;
   }
   public GameData getGame(Integer gameID) throws DataAccessException {
-    GameData game = games.get(gameID);
-    if (game == null) {
-      throw new DataAccessException("Game not found");
-    }
-    return game;
+    return games.get(gameID);
   }
 
   public Collection<GameData> listGames() {
+    System.out.println("game values " + games.values());
     return games.values();
   }
 
@@ -51,26 +56,33 @@ public class GameDaoInMemory {
     games.put(game.gameID(), game);
   }
 
-  public void addColor(GameData game, String playerColor) throws DataAccessException {
+  public void addColor(Integer gameID, String playerColor, String username) throws DataAccessException {
+    GameData game = games.get(gameID);
+    if (game == null) {
+      throw new DataAccessException("Game not found");
+    }
+
     String whiteUsername = game.whiteUsername();
     String blackUsername = game.blackUsername();
 
-    if ("WHITE".equals(playerColor)) {
+    if ("WHITE".equalsIgnoreCase(playerColor)) {
       if (whiteUsername != null) {
-        throw new DataAccessException("White player already exists");
+        throw new DataAccessException("Color already exists");
       }
-      whiteUsername = playerColor;
-    } else if ("BLACK".equals(playerColor)) {
+      whiteUsername = username;
+    } else if ("BLACK".equalsIgnoreCase(playerColor)) {
       if (blackUsername != null) {
-        throw new DataAccessException("Black player already exists");
+        throw new DataAccessException("Color already exists");
       }
-      blackUsername = playerColor;
+      blackUsername = username;
+    } else if (playerColor == null || playerColor.isEmpty()) {
+      System.out.println("Observer joined the game");
     } else {
       throw new DataAccessException("Invalid player color specified");
     }
 
-    GameData updatedGame = new GameData(game.gameID(), whiteUsername, blackUsername, game.gameName(), game.game());
-    games.put(game.gameID(), updatedGame);
+    game = new GameData(gameID, whiteUsername, blackUsername, game.gameName(), game.game());
+    games.put(gameID, game);
   }
 
   public void clear() {

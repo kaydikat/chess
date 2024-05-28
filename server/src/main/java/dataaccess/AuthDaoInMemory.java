@@ -19,6 +19,10 @@ public class AuthDaoInMemory {
     return instance;
   }
 
+  public static void resetInstance() {
+    instance = new AuthDaoInMemory();
+  }
+
   public void createAuth(String username) {
     String authToken = UUID.randomUUID().toString();
     AuthData auth = new AuthData(authToken, username);
