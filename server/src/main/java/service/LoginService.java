@@ -2,7 +2,6 @@ package service;
 
 import dataaccess.AuthDaoInMemory;
 import dataaccess.DataAccessException;
-import dataaccess.UserDao;
 import dataaccess.UserDaoInMemory;
 import model.UserData;
 import request.LoginRequest;

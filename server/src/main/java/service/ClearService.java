@@ -10,7 +10,7 @@ public class ClearService {
     public ClearResult clear(ClearRequest request) {
         AuthDaoInMemory authDao = AuthDaoInMemory.getInstance();
         UserDaoInMemory userDao = UserDaoInMemory.getInstance();
-        GameDaoInMemory gameDao = new GameDaoInMemory();
+        GameDaoInMemory gameDao = GameDaoInMemory.getInstance();
 
         authDao.clear();
         userDao.clear();

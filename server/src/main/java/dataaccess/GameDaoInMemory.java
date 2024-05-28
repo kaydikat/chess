@@ -9,14 +9,29 @@ import java.util.Map;
 import java.util.Random;
 
 public class GameDaoInMemory {
+  private static GameDaoInMemory instance;
   private final Map<Integer, GameData> games = new HashMap<>();
+
+  private GameDaoInMemory() {}
+
+  public static GameDaoInMemory getInstance() {
+    if (instance == null) {
+      instance = new GameDaoInMemory();
+    }
+    return instance;
+  }
   private final Random random = new Random();
 
-  public void createGame(String gameName) throws DataAccessException {
+  public Integer createGameID(GameData game) {
     int newGameID = 1000 + random.nextInt(9000);
-
-    GameData game = new GameData(newGameID, null, null, gameName, new ChessGame());
     games.put(newGameID, game);
+    return newGameID;
+  }
+
+  public GameData createGame(String gameName) throws DataAccessException {
+    GameData game = new GameData(null, null, null, gameName, new ChessGame());
+    createGameID(game);
+    return game;
   }
   public GameData getGame(Integer gameID) throws DataAccessException {
     GameData game = games.get(gameID);

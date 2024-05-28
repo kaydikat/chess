@@ -18,8 +18,8 @@ public class LogoutService {
     if (request == null) {
       return new LogoutResult();
     }
-    if (checkAuth(request.getAuthToken())) {
-      authDao.deleteAuth(request.getAuthToken());
+    if (checkAuth(request.authToken())) {
+      authDao.deleteAuth(request.authToken());
     }
 
     return new LogoutResult();
