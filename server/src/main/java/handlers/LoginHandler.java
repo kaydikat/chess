@@ -19,6 +19,11 @@ public class LoginHandler implements Route {
     LoginRequest request = gson.fromJson(req.body(), LoginRequest.class);
     LoginService service = new LoginService();
     LoginResult result = service.login(request);
+    if (result.username() == null || result.authToken() == null) {
+      res.status(401);
+    } else {
+      res.status(200);
+    }
     return gson.toJson(result);
   }
 }

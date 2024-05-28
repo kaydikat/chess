@@ -21,6 +21,11 @@ public class LogoutHandler implements Route {
     String authToken = req.headers("authorization");
     LogoutRequest request = new LogoutRequest(authToken);
     LogoutResult result = logoutService.logout(request);
+    if (result.message() == null) {
+      res.status(200);
+    } else {
+      res.status(401);
+    }
 
     return gson.toJson(result);
   }

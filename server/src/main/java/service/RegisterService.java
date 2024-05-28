@@ -18,7 +18,10 @@ public class RegisterService {
   }
   public RegisterResult register(RegisterRequest request) throws DataAccessException {
     if (userDao.getUser(request.username()) != null) {
-      throw new DataAccessException("User already exists");
+      return new RegisterResult(null, null, "error: user already exists");
+    }
+    if (request.password() == null) {
+        return new RegisterResult(null, null, "error: missing required field");
     }
       UserData user=new UserData(request.username(), request.password(), request.email());
       userDao.createUser(user);
@@ -27,6 +30,6 @@ public class RegisterService {
     String authToken = authDao.getAuth(request.username()).authToken();
     System.out.println("authToken: " + authToken);
 
-    return new RegisterResult(request.username(), authToken);
+    return new RegisterResult(request.username(), authToken, null);
   };
 }

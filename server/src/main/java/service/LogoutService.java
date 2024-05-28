@@ -15,13 +15,11 @@ public class LogoutService {
     this.authDao = AuthDaoInMemory.getInstance();
   }
   public LogoutResult logout(LogoutRequest request) throws DataAccessException {
-    if (request == null) {
-
-      return new LogoutResult();
-    }
     if (checkAuth(request.authToken())) {
       authDao.deleteAuth(request.authToken());
+      return new LogoutResult(null);
+    } else {
+      return new LogoutResult("error: invalid auth token");
     }
-    return new LogoutResult();
   }
 }

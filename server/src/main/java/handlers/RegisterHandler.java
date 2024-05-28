@@ -19,6 +19,14 @@ public class RegisterHandler implements Route {
     RegisterRequest request = gson.fromJson(req.body(), RegisterRequest.class);
     RegisterService service = new RegisterService();
     RegisterResult result = service.register(request);
+    if (result.message() != null && result.message().equals("error: user already exists")) {
+      res.status(403);
+    }
+    else if (result.message() != null && result.message().equals("error: missing required field")) {
+        res.status(400);
+    } else {
+      res.status(200);
+    }
     return gson.toJson(result);
   }
 }

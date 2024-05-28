@@ -21,15 +21,17 @@ public class LoginService {
   public LoginResult login(LoginRequest request) throws DataAccessException {
 
     UserData user = userDao.getUser(request.username());
-    if (user == null || !user.password().equals(request.password())) {
-      System.out.println("User not found or password incorrect");
-      return null;
+    if (user == null) {
+      return new LoginResult(null, null, "error: unauthorized");
+    }
+    if (!user.password().equals(request.password())) {
+      return new LoginResult(null, null, "error: unauthorized");
     }
 
     authDao.createAuth(request.username());
     String authToken = authDao.getAuth(request.username()).authToken();
     System.out.println("authToken: " + authToken);
 
-    return new LoginResult(request.username(), authToken);
+    return new LoginResult(request.username(), authToken, null);
   }
 }
