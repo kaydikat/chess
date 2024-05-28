@@ -30,7 +30,6 @@ public class GameDaoInMemory {
 
   public GameData createGame(String gameName) throws DataAccessException {
     GameData game = new GameData(null, null, null, gameName, new ChessGame());
-    createGameID(game);
     return game;
   }
   public GameData getGame(Integer gameID) throws DataAccessException {
