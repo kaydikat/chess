@@ -10,15 +10,18 @@ import spark.Route;
 
 public class LogoutHandler implements Route {
   private final Gson gson;
+  private final LogoutService logoutService;
   public LogoutHandler() {
     this.gson = new Gson();
+    this.logoutService = new LogoutService();
   }
 
   @Override
   public Object handle(Request req, Response res) throws Exception {
-    LogoutRequest request = gson.fromJson(req.body(), LogoutRequest.class);
-    LogoutService service = new LogoutService();
-    LogoutResult result = service.logout(request);
+    String authToken = req.headers("authorization");
+    LogoutRequest request = new LogoutRequest(authToken);
+    LogoutResult result = logoutService.logout(request);
+
     return gson.toJson(result);
   }
 }

@@ -18,14 +18,14 @@ public class CreateGameService {
   }
   public CreateGameResult createGame(CreateGameRequest request) throws DataAccessException {
     if (request == null) {
-      return new CreateGameResult(1234);
+      return new CreateGameResult(null);
     }
     if (checkAuth(request.authToken())) {
       GameData game = gameDao.createGame(request.gameName());
       Integer gameID = gameDao.createGameID(game);
       return new CreateGameResult(gameID);
     } else {
-      return new CreateGameResult(1234);
+      return new CreateGameResult(null);
     }
   }
 }

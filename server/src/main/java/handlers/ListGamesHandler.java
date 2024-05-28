@@ -22,11 +22,10 @@ public class ListGamesHandler implements Route {
 
   @Override
   public Object handle(Request req, Response res) throws Exception {
-    String authToken = req.queryParams("authToken");
+    String authToken = req.headers("authorization");
     ListGamesRequest request = new ListGamesRequest(authToken);
     ListGamesResult result = listGamesService.listGames(request);
 
-    res.type("application/json");
     return gson.toJson(result);
 
   }

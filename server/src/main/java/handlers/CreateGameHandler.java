@@ -10,15 +10,18 @@ import spark.Route;
 
 public class CreateGameHandler implements Route {
     private final Gson gson;
+    private final CreateGameService createGameService;
     public CreateGameHandler() {
       this.gson = new Gson();
+      this.createGameService = new CreateGameService();
     }
 
     @Override
     public Object handle(Request req, Response res) throws Exception {
+      String authToken = req.headers("authorization");
       CreateGameRequest request = gson.fromJson(req.body(), CreateGameRequest.class);
-      CreateGameService service = new CreateGameService();
-      CreateGameResult result = service.createGame(request);
+      request = new CreateGameRequest(authToken, request.gameName());
+      CreateGameResult result = createGameService.createGame(request);
       return gson.toJson(result);
     }
 }

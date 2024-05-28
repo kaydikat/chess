@@ -16,12 +16,12 @@ public class LogoutService {
   }
   public LogoutResult logout(LogoutRequest request) throws DataAccessException {
     if (request == null) {
+
       return new LogoutResult();
     }
     if (checkAuth(request.authToken())) {
       authDao.deleteAuth(request.authToken());
     }
-
     return new LogoutResult();
   }
 }
