@@ -7,7 +7,17 @@ import java.util.Map;
 import java.util.UUID;
 
 public class AuthDaoInMemory {
+  private static AuthDaoInMemory instance;
   private final Map<String, AuthData> auths = new HashMap<>();
+
+  private AuthDaoInMemory() {}
+
+  public static AuthDaoInMemory getInstance() {
+    if (instance == null) {
+      instance = new AuthDaoInMemory();
+    }
+    return instance;
+  }
 
   public void createAuth(String username) {
     String authToken = UUID.randomUUID().toString();
@@ -23,7 +33,7 @@ public class AuthDaoInMemory {
     }
     return auth;
   }
-  void deleteAuth(String authToken) throws DataAccessException {
+  public void deleteAuth(String authToken) throws DataAccessException {
     AuthData auth = auths.get(authToken);
     if (auth == null) {
       throw new DataAccessException("Auth not found");

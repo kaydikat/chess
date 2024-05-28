@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 
 
 class LoginServiceTest {
-  UserDaoInMemory userDao = new UserDaoInMemory();
   private final LoginService loginService = new LoginService();
   private final RegisterService registerService = new RegisterService();
   LoginRequest request = new LoginRequest("testUser", "password123");

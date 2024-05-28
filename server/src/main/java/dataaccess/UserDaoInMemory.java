@@ -6,7 +6,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserDaoInMemory {
+  private static UserDaoInMemory instance;
+
   private final Map<String, UserData> users = new HashMap<>();
+
+  private UserDaoInMemory() {}
+
+  public static UserDaoInMemory getInstance() {
+    if (instance == null) {
+      instance = new UserDaoInMemory();
+    }
+    return instance;
+  }
 
     public void createUser(UserData user) throws DataAccessException {
       if (users.containsKey(user.username())) {

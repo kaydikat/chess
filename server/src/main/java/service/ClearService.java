@@ -8,8 +8,8 @@ import result.ClearResult;
 
 public class ClearService {
     public ClearResult clear(ClearRequest request) {
-        AuthDaoInMemory authDao = new AuthDaoInMemory();
-        UserDaoInMemory userDao = new UserDaoInMemory();
+        AuthDaoInMemory authDao = AuthDaoInMemory.getInstance();
+        UserDaoInMemory userDao = UserDaoInMemory.getInstance();
         GameDaoInMemory gameDao = new GameDaoInMemory();
 
         authDao.clear();

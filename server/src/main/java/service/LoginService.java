@@ -12,16 +12,23 @@ import java.util.UUID;
 
 public class LoginService {
 
+  private final AuthDaoInMemory authDao;
+  private final UserDaoInMemory userDao;
+
+  public LoginService() {
+    this.authDao = AuthDaoInMemory.getInstance();
+    this.userDao = UserDaoInMemory.getInstance();
+  }
   public LoginResult login(LoginRequest request) throws DataAccessException {
-    UserDaoInMemory userDao = new UserDaoInMemory();
+
     UserData user = userDao.getUser(request.username());
     if (user == null || !user.password().equals(request.password())) {
       System.out.println("User not found or password incorrect");
+      return null;
     }
 
-    AuthDaoInMemory authDao = new AuthDaoInMemory();
     authDao.createAuth(request.username());
-    String authToken = UUID.randomUUID().toString();
+    String authToken = authDao.getAuth(request.username()).authToken();
     System.out.println("authToken: " + authToken);
 
     return new LoginResult(request.username(), authToken);
