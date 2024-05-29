@@ -38,9 +38,10 @@ class ListGamesServiceTest {
 
   @Test
   public void testListGamesWithValidAuth() throws DataAccessException {
-    String authToken = registerService.register(registerRequest).authToken();
+    registerService.register(registerRequest);
+    String authToken = authDao.getAuth("testUser").authToken();
 
-//    assertNotNull(authDao.getAuth(authToken), "Auth token should be valid after registration");
+    assertNotNull(authDao.getAuth(authToken), "Auth token should be valid after registration");
 
     // Create some games
     CreateGameRequest createGameRequest = new CreateGameRequest(authToken, "Chess1");
@@ -52,8 +53,8 @@ class ListGamesServiceTest {
     ListGamesRequest listGamesRequest = new ListGamesRequest(authToken);
     ListGamesResult result = listGamesService.listGames(listGamesRequest);
 
-//    assertNull(result.message(), "Expected no error message for valid auth token");
-//    assertNotNull(result.games(), "Expected a non-null games list");
+    assertNull(result.message(), "Expected no error message for valid auth token");
+    assertNotNull(result.games(), "Expected a non-null games list");
     assertEquals(2, result.games().size(), "Expected two games to be listed");
 
     // Check the games' names
