@@ -3,7 +3,6 @@ package service;
 import dataaccess.AuthDaoInMemory;
 import dataaccess.GameDaoInMemory;
 import dataaccess.DataAccessException;
-import model.GameData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import request.CreateGameRequest;
@@ -34,13 +33,16 @@ class ListGamesServiceTest {
     gameDao.clear();
 
     // Set up the register request
-    registerRequest = new RegisterRequest("testUser", "password123", "email");
+    registerRequest = new RegisterRequest("testUser", "password123", "email@example.com");
   }
 
   @Test
   public void testListGamesWithValidAuth() throws DataAccessException {
     // Register a user and get the auth token
     String authToken = registerService.register(registerRequest).authToken();
+
+    // Validate that the auth token is correctly stored
+    assertNotNull(authDao.getAuth(authToken), "Auth token should be valid after registration");
 
     // Create some games
     CreateGameRequest createGameRequest = new CreateGameRequest(authToken, "Chess1");
@@ -52,8 +54,9 @@ class ListGamesServiceTest {
     ListGamesRequest listGamesRequest = new ListGamesRequest(authToken);
     ListGamesResult result = listGamesService.listGames(listGamesRequest);
 
-    assertEquals(null, result.message(), "Expected no error message for valid auth token");
-    assertTrue(result.games() != null && result.games().size() == 2, "Expected two games to be listed");
+    assertNull(result.message(), "Expected no error message for valid auth token");
+    assertNotNull(result.games(), "Expected a non-null games list");
+    assertEquals(2, result.games().size(), "Expected two games to be listed");
 
     // Check the games' names
     boolean chess1Found = result.games().stream().anyMatch(game -> "Chess1".equals(game.gameName()));
