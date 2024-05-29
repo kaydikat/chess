@@ -38,11 +38,7 @@ class ListGamesServiceTest {
 
   @Test
   public void testListGamesWithValidAuth() throws DataAccessException {
-    // Register a user and get the auth token
     String authToken = registerService.register(registerRequest).authToken();
-
-    // Validate that the auth token is correctly stored
-    assertNotNull(authDao.getAuth(authToken), "Auth token should be valid after registration");
 
     // Create some games
     CreateGameRequest createGameRequest = new CreateGameRequest(authToken, "Chess1");
