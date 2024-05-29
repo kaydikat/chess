@@ -8,57 +8,32 @@ import java.util.Collection;
 public class BishopMovesCalculator {
     public Collection<ChessMove> calculateMoves(ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor pieceColor) {
         var moves = new ArrayList<ChessMove>();
-        for (int i = 1; myPosition.getRow() - i >= 1 && myPosition.getColumn() - i >= 1; i++) {
-            ChessPiece piece = board.getPiece(new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() - i));
-            if (piece == null) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() - i), null));
-            } else if (piece.getTeamColor() != pieceColor) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() - i), null));
-                break; // Stop iteration if blocked by a piece of the opposite color
-            } else {
-                break; // Stop iteration if blocked by a piece of the same color
-            }
-        }
 
-        // Iterate diagonally upwards and to the right
-        for (int i = 1; myPosition.getRow() - i >= 1 && myPosition.getColumn() + i <= 8; i++) {
-            ChessPiece piece = board.getPiece(new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() + i));
-            if (piece == null) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() + i), null));
-            } else if (piece.getTeamColor() != pieceColor) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - i, myPosition.getColumn() + i), null));
-                break; // Stop iteration if blocked by a piece of the opposite color
-            } else {
-                break; // Stop iteration if blocked by a piece of the same color
-            }
-        }
-
-        // Iterate diagonally downwards and to the left
-        for (int i = 1; myPosition.getRow() + i <= 8 && myPosition.getColumn() - i >= 1; i++) {
-            ChessPiece piece = board.getPiece(new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() - i));
-            if (piece == null) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() - i), null));
-            } else if (piece.getTeamColor() != pieceColor) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() - i), null));
-                break; // Stop iteration if blocked by a piece of the opposite color
-            } else {
-                break; // Stop iteration if blocked by a piece of the same color
-            }
-        }
-
-        // Iterate diagonally downwards and to the right
-        for (int i = 1; myPosition.getRow() + i <= 8 && myPosition.getColumn() + i <= 8; i++) {
-            ChessPiece piece = board.getPiece(new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + i));
-            if (piece == null) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + i), null));
-            } else if (piece.getTeamColor() != pieceColor) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + i), null));
-                break; // Stop iteration if blocked by a piece of the opposite color
-            } else {
-                break; // Stop iteration if blocked by a piece of the same color
-            }
-        }
+        calculateDirectionalMoves(board, myPosition, pieceColor, -1, -1, moves);
+        calculateDirectionalMoves(board, myPosition, pieceColor, -1, 1, moves);
+        calculateDirectionalMoves(board, myPosition, pieceColor, 1, -1, moves);
+        calculateDirectionalMoves(board, myPosition, pieceColor, 1, 1, moves);
 
         return moves;
+    }
+
+    private void calculateDirectionalMoves(ChessBoard board, ChessPosition startPosition, ChessGame.TeamColor pieceColor,
+                                           int rowChange, int colChange, Collection<ChessMove> moves) {
+        for (int i = 1; ; i++) {
+            int newRow = startPosition.getRow() + i * rowChange;
+            int newCol = startPosition.getColumn() + i * colChange;
+            if (newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8) {
+                break;
+            }
+            ChessPiece piece = board.getPiece(new ChessPosition(newRow, newCol));
+            if (piece == null) {
+                moves.add(new ChessMove(startPosition, new ChessPosition(newRow, newCol), null));
+            } else if (piece.getTeamColor() != pieceColor) {
+                moves.add(new ChessMove(startPosition, new ChessPosition(newRow, newCol), null));
+                break; // Stop iteration if blocked by a piece of the opposite color
+            } else {
+                break; // Stop iteration if blocked by a piece of the same color
+            }
+        }
     }
 }
