@@ -45,13 +45,6 @@ public class GameDaoInMemory {
     return games.values();
   }
 
-  public void updateGame(GameData game) throws DataAccessException {
-    if (!games.containsKey(game.gameID())) {
-      throw new DataAccessException("Game not found");
-    }
-    games.put(game.gameID(), game);
-  }
-
   public void addColor(Integer gameID, String playerColor, String username) throws DataAccessException {
     GameData game = games.get(gameID);
     if (game == null) {
