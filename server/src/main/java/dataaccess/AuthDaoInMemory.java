@@ -34,7 +34,7 @@ public class AuthDaoInMemory {
   public AuthData getAuth(String authToken) throws DataAccessException {
     AuthData auth = auths.get(authToken);
     if (auth == null) {
-      throw new DataAccessException("Auth not found");
+      return null;
     }
     return auth;
   }
