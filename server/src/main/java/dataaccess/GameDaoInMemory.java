@@ -23,10 +23,6 @@ public class GameDaoInMemory {
   }
   private final Random random = new Random();
 
-  public static void resetInstance() {
-    instance = new GameDaoInMemory();
-  }
-
   public Integer createGameID(GameData game) {
     int newGameID = 1000 + random.nextInt(9000);
     games.put(newGameID, game);

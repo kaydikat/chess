@@ -18,9 +18,8 @@ public class UserDaoInMemory {
     }
     return instance;
   }
-
-  public static void resetInstance() {
-    instance = new UserDaoInMemory();
+  public Map<String, UserData> getUsers() {
+    return users;
   }
 
   public void createUser(UserData user) throws DataAccessException {
