@@ -25,7 +25,6 @@ public class Server {
         Spark.awaitStop();
     }
     private static void createEndpoints() {
-        Spark.get("/hello", (req, res) -> "Hello!");
         Spark.delete("/db", (req, res) -> (new ClearHandler().handleRequest(req.body())));
         Spark.post("/user", (req, res) ->
                 (new RegisterHandler()).handle(req, res));

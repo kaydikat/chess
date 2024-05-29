@@ -25,7 +25,11 @@ public class ListGamesHandler implements Route {
     String authToken = req.headers("authorization");
     ListGamesRequest request = new ListGamesRequest(authToken);
     ListGamesResult result = listGamesService.listGames(request);
-
+     if (result.message() != null) {
+        res.status(401);
+     } else {
+        res.status(200);
+     }
     return gson.toJson(result);
 
   }
