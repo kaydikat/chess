@@ -1,17 +1,22 @@
 package service;
 
-import dataaccess.AuthDaoInMemory;
-import dataaccess.UserDaoInMemory;
-import dataaccess.GameDaoInMemory;
+import dataaccess.*;
 import request.ClearRequest;
 import result.ClearResult;
 
 public class ClearService {
-    public ClearResult clear(ClearRequest request) {
-        AuthDaoInMemory authDao = AuthDaoInMemory.getInstance();
-        UserDaoInMemory userDao = UserDaoInMemory.getInstance();
-        GameDaoInMemory gameDao = GameDaoInMemory.getInstance();
+    private final AuthDao authDao;
+    private final UserDao userDao;
+    private final GameDao gameDao;
 
+    // Constructor to inject the DAO dependencies
+    public ClearService() {
+        this.authDao = AuthDaoInMemory.getInstance();
+        this.userDao = UserDaoInMemory.getInstance();
+        this.gameDao = GameDaoInMemory.getInstance();
+    }
+
+    public ClearResult clear(ClearRequest request) {
         authDao.clear();
         userDao.clear();
         gameDao.clear();

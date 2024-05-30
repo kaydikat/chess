@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class GameDaoInMemory {
+public class GameDaoInMemory implements GameDao {
   private static GameDaoInMemory instance;
   private final Map<Integer, GameData> games = new HashMap<>();
 

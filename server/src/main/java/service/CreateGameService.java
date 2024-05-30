@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.DataAccessException;
+import dataaccess.GameDao;
 import dataaccess.GameDaoInMemory;
 import model.GameData;
 import request.CreateGameRequest;
@@ -10,7 +11,7 @@ import result.ListGamesResult;
 import static authentication.CheckAuth.checkAuth;
 
 public class CreateGameService {
-  private final GameDaoInMemory gameDao;
+  private final GameDao gameDao;
 
 
   public CreateGameService() {

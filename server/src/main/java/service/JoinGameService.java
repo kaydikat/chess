@@ -1,8 +1,6 @@
 package service;
 
-import dataaccess.DataAccessException;
-import dataaccess.GameDaoInMemory;
-import dataaccess.UserDaoInMemory;
+import dataaccess.*;
 import model.GameData;
 import request.JoinGameRequest;
 import request.LoginRequest;
@@ -12,8 +10,8 @@ import static authentication.CheckAuth.checkAuth;
 import static authentication.ReturnAuth.returnAuth;
 
 public class JoinGameService {
-  private final GameDaoInMemory gameDao;
-  private final UserDaoInMemory userDao;
+  private final GameDao gameDao;
+  private final UserDao userDao;
 
 
   public JoinGameService() {

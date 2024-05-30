@@ -1,16 +1,14 @@
 package service;
 
-import dataaccess.AuthDaoInMemory;
-import dataaccess.DataAccessException;
+import dataaccess.*;
 import model.UserData;
 import request.RegisterRequest;
 import result.RegisterResult;
-import dataaccess.UserDaoInMemory;
 
 public class RegisterService {
 
-  private final AuthDaoInMemory authDao;
-  private final UserDaoInMemory userDao;
+  private final AuthDao authDao;
+  private final UserDao userDao;
 
   public RegisterService() {
     this.authDao = AuthDaoInMemory.getInstance();

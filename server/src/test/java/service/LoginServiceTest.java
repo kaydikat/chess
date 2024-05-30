@@ -1,8 +1,6 @@
 package service;
 
-import dataaccess.AuthDaoInMemory;
-import dataaccess.UserDaoInMemory;
-import dataaccess.DataAccessException;
+import dataaccess.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import request.LoginRequest;
@@ -14,8 +12,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class LoginServiceTest {
   private LoginService loginService;
   private RegisterService registerService;
-  private AuthDaoInMemory authDao;
-  private UserDaoInMemory userDao;
+  private AuthDao authDao;
+  private UserDao userDao;
   private LoginRequest loginRequest;
   private RegisterRequest registerRequest;
 

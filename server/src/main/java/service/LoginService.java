@@ -1,8 +1,6 @@
 package service;
 
-import dataaccess.AuthDaoInMemory;
-import dataaccess.DataAccessException;
-import dataaccess.UserDaoInMemory;
+import dataaccess.*;
 import model.UserData;
 import request.LoginRequest;
 import result.LoginResult;
@@ -11,8 +9,8 @@ import java.util.UUID;
 
 public class LoginService {
 
-  private final AuthDaoInMemory authDao;
-  private final UserDaoInMemory userDao;
+  private final AuthDao authDao;
+  private final UserDao userDao;
 
   public LoginService() {
     this.authDao = AuthDaoInMemory.getInstance();

@@ -1,9 +1,6 @@
 package service;
 
-import dataaccess.AuthDaoInMemory;
-import dataaccess.DataAccessException;
-import dataaccess.UserDaoInMemory;
-import dataaccess.GameDaoInMemory;
+import dataaccess.*;
 import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,13 +14,17 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ClearServiceTest {
 
   private ClearService clearService;
+  private AuthDao authDao;
+  private UserDao userDao;
+  private GameDao gameDao;
 
   @BeforeEach
   public void setUp() {
     // Reset the instances of the DAOs to ensure a clean state for each test
-    AuthDaoInMemory.getInstance().clear();
-    UserDaoInMemory.getInstance().clear();
-    GameDaoInMemory.getInstance().clear();
+    this.authDao = AuthDaoInMemory.getInstance();
+    this.userDao = UserDaoInMemory.getInstance();
+    this.gameDao = GameDaoInMemory.getInstance();
+
 
     clearService = new ClearService();
   }

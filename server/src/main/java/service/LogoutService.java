@@ -1,6 +1,7 @@
 package service;
 
 
+import dataaccess.AuthDao;
 import dataaccess.AuthDaoInMemory;
 import dataaccess.DataAccessException;
 import request.LogoutRequest;
@@ -9,7 +10,7 @@ import result.LogoutResult;
 import static authentication.CheckAuth.checkAuth;
 
 public class LogoutService {
-  private final AuthDaoInMemory authDao;
+  private final AuthDao authDao;
 
   public LogoutService() {
     this.authDao = AuthDaoInMemory.getInstance();

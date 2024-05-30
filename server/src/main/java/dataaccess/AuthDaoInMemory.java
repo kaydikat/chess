@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class AuthDaoInMemory {
+public class AuthDaoInMemory implements AuthDao {
   private static AuthDaoInMemory instance;
   private final Map<String, AuthData> auths = new HashMap<>();
 
