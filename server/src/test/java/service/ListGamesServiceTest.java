@@ -39,6 +39,7 @@ class ListGamesServiceTest {
   @Test
   public void testListGamesWithValidAuth() throws DataAccessException {
     registerService.register(registerRequest);
+
     String authToken = authDao.getAuth("testUser").authToken();
 
     assertNotNull(authDao.getAuth(authToken), "Auth token should be valid after registration");
