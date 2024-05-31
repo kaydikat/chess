@@ -1,6 +1,7 @@
 package handlers;
 
 import com.google.gson.Gson;
+import dataaccess.GameDao;
 import request.CreateGameRequest;
 import result.CreateGameResult;
 import service.CreateGameService;
@@ -10,10 +11,12 @@ import spark.Route;
 
 public class CreateGameHandler implements Route {
     private final Gson gson;
+    private final GameDao gameDao;
     private final CreateGameService createGameService;
-    public CreateGameHandler() {
+    public CreateGameHandler(GameDao gameDao) {
       this.gson = new Gson();
-      this.createGameService = new CreateGameService();
+      this.gameDao = gameDao;
+      this.createGameService = new CreateGameService(gameDao);
     }
 
     @Override

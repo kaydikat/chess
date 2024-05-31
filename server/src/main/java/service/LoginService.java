@@ -12,9 +12,9 @@ public class LoginService {
   private final AuthDao authDao;
   private final UserDao userDao;
 
-  public LoginService() {
-    this.authDao = AuthDaoInMemory.getInstance();
-    this.userDao = UserDaoInMemory.getInstance();
+  public LoginService(AuthDao authDao, UserDao userDao) {
+    this.authDao = authDao;
+    this.userDao = userDao;
   }
   public LoginResult login(LoginRequest request) throws DataAccessException {
 

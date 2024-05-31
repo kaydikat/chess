@@ -1,6 +1,6 @@
 package server;
 
-import dataaccess.DataAccessException;
+import dataaccess.*;
 import handlers.*;
 import spark.*;
 
@@ -25,19 +25,22 @@ public class Server {
         Spark.awaitStop();
     }
     private static void createEndpoints() {
-        Spark.delete("/db", (req, res) -> (new ClearHandler().handleRequest(req.body())));
+        AuthDao authDao = AuthDaoInMemory.getInstance();
+        UserDao userDao = UserDaoInMemory.getInstance();
+        GameDao gameDao = GameDaoInMemory.getInstance();
+
+        Spark.delete("/db", (req, res) -> (new ClearHandler(authDao, userDao, gameDao).handleRequest(req.body())));
         Spark.post("/user", (req, res) ->
-                (new RegisterHandler()).handle(req, res));
+                (new RegisterHandler(authDao, userDao)).handle(req, res));
 
         Spark.post("/session", (req, res) ->
-                (new LoginHandler()).handle(req, res));
-        Spark.delete("/session", new LogoutHandler());
+                (new LoginHandler(authDao, userDao)).handle(req, res));
+        Spark.delete("/session", new LogoutHandler(authDao));
         Spark.post("/game", (req, res) ->
-                (new CreateGameHandler()).handle(req, res));
+                (new CreateGameHandler(gameDao)).handle(req, res));
         Spark.get("/game", (req, res) ->
-                (new ListGamesHandler()).handle(req, res));
+                (new ListGamesHandler(gameDao)).handle(req, res));
         Spark.put("/game", (req, res) ->
-                (new JoinGameHandler()).handle(req, res));
+                (new JoinGameHandler(gameDao, userDao)).handle(req, res));
     }
-
 }

@@ -14,8 +14,8 @@ public class CreateGameService {
   private final GameDao gameDao;
 
 
-  public CreateGameService() {
-    this.gameDao = GameDaoInMemory.getInstance();
+  public CreateGameService(GameDao gameDao) {
+    this.gameDao = gameDao;
   }
   public CreateGameResult createGame(CreateGameRequest request) throws DataAccessException {
     if (checkAuth(request.authToken())) {

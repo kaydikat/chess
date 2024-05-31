@@ -1,6 +1,7 @@
 package handlers;
 
 import com.google.gson.Gson;
+import dataaccess.AuthDao;
 import service.LogoutService;
 import request.LogoutRequest;
 import result.LogoutResult;
@@ -10,10 +11,12 @@ import spark.Route;
 
 public class LogoutHandler implements Route {
   private final Gson gson;
+  private final AuthDao authDao;
   private final LogoutService logoutService;
-  public LogoutHandler() {
+  public LogoutHandler(AuthDao authDao) {
     this.gson = new Gson();
-    this.logoutService = new LogoutService();
+    this.authDao = authDao;
+    this.logoutService = new LogoutService(authDao);
   }
 
   @Override

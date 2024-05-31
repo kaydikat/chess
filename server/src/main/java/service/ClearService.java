@@ -10,10 +10,10 @@ public class ClearService {
     private final GameDao gameDao;
 
     // Constructor to inject the DAO dependencies
-    public ClearService() {
-        this.authDao = AuthDaoInMemory.getInstance();
-        this.userDao = UserDaoInMemory.getInstance();
-        this.gameDao = GameDaoInMemory.getInstance();
+    public ClearService(AuthDao authDao, UserDao userDao, GameDao gameDao) {
+        this.authDao = authDao;
+        this.userDao = userDao;
+        this.gameDao = gameDao;
     }
 
     public ClearResult clear(ClearRequest request) {

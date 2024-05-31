@@ -2,6 +2,7 @@ package dataaccess;
 
 import java.sql.*;
 import java.util.Properties;
+import tables.CreateTables;
 
 public class DatabaseManager {
     private static final String DATABASE_NAME;
@@ -41,10 +42,25 @@ public class DatabaseManager {
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
+            createTables();
+
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
     }
+    private static void createTables() throws DataAccessException {
+        try (var conn = getConnection()) {
+            for (var statement : new CreateTables().allTables()) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
 
     /**
      * Create a connection to the database and sets the catalog based upon the

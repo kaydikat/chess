@@ -15,8 +15,8 @@ public class ListGamesService {
   private final GameDao gameDao;
 
 
-  public ListGamesService() {
-    this.gameDao = GameDaoInMemory.getInstance();
+  public ListGamesService(GameDao gameDao) {
+    this.gameDao = gameDao;
   }
   public ListGamesResult listGames(ListGamesRequest request) {
     if (checkAuth(request.authToken())) {

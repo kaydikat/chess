@@ -14,9 +14,9 @@ public class JoinGameService {
   private final UserDao userDao;
 
 
-  public JoinGameService() {
-    this.gameDao = GameDaoInMemory.getInstance();
-    this.userDao = UserDaoInMemory.getInstance();
+  public JoinGameService(GameDao gameDao, UserDao userDao) {
+    this.gameDao = gameDao;
+    this.userDao = userDao;
   }
   public JoinGameResult joinGame(JoinGameRequest request) {
     String username = returnAuth(request.authToken());

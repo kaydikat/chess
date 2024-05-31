@@ -1,6 +1,7 @@
 package handlers;
 
 import com.google.gson.Gson;
+import dataaccess.GameDao;
 import model.GameData;
 import request.ListGamesRequest;
 import result.ListGamesResult;
@@ -13,11 +14,13 @@ import java.util.Collection;
 
 public class ListGamesHandler implements Route {
   private final Gson gson;
+  private final GameDao gameDao;
   private final ListGamesService listGamesService;
 
-  public ListGamesHandler() {
+  public ListGamesHandler(GameDao gameDao) {
     this.gson=new Gson();
-    this.listGamesService=new ListGamesService();
+    this.gameDao=gameDao;
+    this.listGamesService=new ListGamesService(gameDao);
   }
 
   @Override

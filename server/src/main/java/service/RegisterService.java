@@ -10,9 +10,9 @@ public class RegisterService {
   private final AuthDao authDao;
   private final UserDao userDao;
 
-  public RegisterService() {
-    this.authDao = AuthDaoInMemory.getInstance();
-    this.userDao = UserDaoInMemory.getInstance();
+  public RegisterService(AuthDao authDao, UserDao userDao) {
+    this.authDao = authDao;
+    this.userDao = userDao;
   }
   public RegisterResult register(RegisterRequest request) throws DataAccessException {
     if (userDao.getUser(request.username()) != null) {

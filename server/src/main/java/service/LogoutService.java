@@ -12,8 +12,8 @@ import static authentication.CheckAuth.checkAuth;
 public class LogoutService {
   private final AuthDao authDao;
 
-  public LogoutService() {
-    this.authDao = AuthDaoInMemory.getInstance();
+  public LogoutService(AuthDao authDao) {
+    this.authDao = authDao;
   }
   public LogoutResult logout(LogoutRequest request) throws DataAccessException {
     if (checkAuth(request.authToken())) {

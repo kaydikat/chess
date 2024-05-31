@@ -1,6 +1,8 @@
 package handlers;
 
 import com.google.gson.Gson;
+import dataaccess.GameDao;
+import dataaccess.UserDao;
 import request.JoinGameRequest;
 import result.JoinGameResult;
 import service.JoinGameService;
@@ -10,11 +12,15 @@ import spark.Route;
 
 public class JoinGameHandler implements Route {
   private final Gson gson;
+  private final GameDao gameDao;
+  private final UserDao userDao;
   private final JoinGameService joinGameService;
 
-  public JoinGameHandler() {
+  public JoinGameHandler(GameDao gameDao, UserDao userDao) {
     this.gson=new Gson();
-    this.joinGameService=new JoinGameService();
+    this.gameDao=gameDao;
+    this.userDao=userDao;
+    this.joinGameService=new JoinGameService(gameDao, userDao);
   }
 
   @Override
