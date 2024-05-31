@@ -65,6 +65,15 @@ public class AuthDaoSQL implements AuthDao {
   }
 
   public void clear() {
-
+    try (var conn = DatabaseManager.getConnection()) {
+      var statement = "DELETE FROM auth";
+      try (var preparedStatement = conn.prepareStatement(statement)) {
+        preparedStatement.executeUpdate();
+      }
+    } catch (SQLException e) {
+      System.out.println("Error clearing auth table: " + e.getMessage());
+    } catch (DataAccessException e) {
+      throw new RuntimeException(e);
+    }
   }
 }
