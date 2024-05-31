@@ -53,7 +53,15 @@ public class AuthDaoSQL implements AuthDao {
   }
 
   public void deleteAuth(String authToken) throws DataAccessException {
-
+    try (var conn = DatabaseManager.getConnection()) {
+      var statement = "DELETE FROM auth WHERE authToken=?";
+      try (var preparedStatement = conn.prepareStatement(statement)) {
+        preparedStatement.setString(1, authToken);
+        preparedStatement.executeUpdate();
+      }
+    } catch (SQLException e) {
+      throw new DataAccessException("Error deleting auth: " + e.getMessage());
+    }
   }
 
   public void clear() {
