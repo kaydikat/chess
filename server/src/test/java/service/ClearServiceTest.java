@@ -26,7 +26,7 @@ public class ClearServiceTest {
     this.gameDao = GameDaoInMemory.getInstance();
 
 
-    clearService = new ClearService();
+    clearService = new ClearService(authDao, userDao, gameDao);
   }
 
   @Test

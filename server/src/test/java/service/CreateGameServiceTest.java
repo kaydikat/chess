@@ -19,7 +19,7 @@ public class CreateGameServiceTest {
 
   @BeforeEach
   public void setUp() {
-    createGameService = new CreateGameService();
+    createGameService = new CreateGameService(gameDao);
     authDao = AuthDaoInMemory.getInstance();
     gameDao = GameDaoInMemory.getInstance();
 

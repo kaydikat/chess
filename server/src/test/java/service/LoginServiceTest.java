@@ -19,8 +19,8 @@ class LoginServiceTest {
 
   @BeforeEach
   public void setUp() {
-    loginService = new LoginService();
-    registerService = new RegisterService();
+    loginService = new LoginService(authDao, userDao);
+    registerService = new RegisterService(authDao, userDao);
     authDao = AuthDaoInMemory.getInstance();
     userDao = UserDaoInMemory.getInstance();
 

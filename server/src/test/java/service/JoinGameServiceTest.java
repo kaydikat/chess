@@ -25,9 +25,9 @@ class JoinGameServiceTest {
 
   @BeforeEach
   public void setUp() {
-    joinGameService = new JoinGameService();
-    createGameService = new CreateGameService();
-    registerService = new RegisterService();
+    joinGameService = new JoinGameService(gameDao, userDao);
+    createGameService = new CreateGameService(gameDao);
+    registerService = new RegisterService(authDao, userDao);
     authDao = AuthDaoInMemory.getInstance();
     gameDao = GameDaoInMemory.getInstance();
     userDao = UserDaoInMemory.getInstance();

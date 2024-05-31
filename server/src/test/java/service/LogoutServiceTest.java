@@ -2,6 +2,8 @@ package service;
 
 import dataaccess.AuthDaoInMemory;
 import dataaccess.DataAccessException;
+import dataaccess.GameDaoInMemory;
+import dataaccess.UserDaoInMemory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import request.LoginRequest;
@@ -12,11 +14,12 @@ import result.LogoutResult;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LogoutServiceTest {
-
-  private final LoginService loginService = new LoginService();
-  private final RegisterService registerService = new RegisterService();
-  private final LogoutService logoutService = new LogoutService();
   private AuthDaoInMemory authDao;
+  private UserDaoInMemory userDao;
+
+  private final LoginService loginService = new LoginService(authDao, userDao);
+  private final RegisterService registerService = new RegisterService(authDao, userDao);
+  private final LogoutService logoutService = new LogoutService(authDao);
   private RegisterRequest registerRequest;
   private LoginRequest loginRequest;
 

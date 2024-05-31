@@ -25,7 +25,7 @@ public class Server {
         Spark.awaitStop();
     }
     private static void createEndpoints() {
-        AuthDao authDao = AuthDaoInMemory.getInstance();
+        AuthDao authDao = AuthDaoSQL.getInstance();
         UserDao userDao = UserDaoInMemory.getInstance();
         GameDao gameDao = GameDaoInMemory.getInstance();
 

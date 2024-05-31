@@ -35,11 +35,11 @@ public class AuthDaoSQL implements AuthDao {
     }
   }
 
-  public AuthData getAuth(String authToken) throws DataAccessException {
+  public AuthData getAuth(String username) throws DataAccessException {
     try (var conn = DatabaseManager.getConnection()) {
-      var statement = "SELECT authToken, username FROM auth WHERE authToken=?";
+      var statement = "SELECT authToken, username FROM auth WHERE username=?";
       try (var preparedStatement = conn.prepareStatement(statement)) {
-         preparedStatement.setString(1, authToken);
+        preparedStatement.setString(1, username);
         try (var rs = preparedStatement.executeQuery()) {
           if (rs.next()) {
             return new AuthData(rs.getString("authToken"), rs.getString("username"));

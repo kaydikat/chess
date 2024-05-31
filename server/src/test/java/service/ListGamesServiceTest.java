@@ -3,6 +3,7 @@ package service;
 import dataaccess.AuthDaoInMemory;
 import dataaccess.GameDaoInMemory;
 import dataaccess.DataAccessException;
+import dataaccess.UserDaoInMemory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import request.CreateGameRequest;
@@ -18,13 +19,14 @@ class ListGamesServiceTest {
   private RegisterService registerService;
   private AuthDaoInMemory authDao;
   private GameDaoInMemory gameDao;
+  private UserDaoInMemory userDao;
   private RegisterRequest registerRequest;
 
   @BeforeEach
   public void setUp() {
-    createGameService = new CreateGameService();
-    listGamesService = new ListGamesService();
-    registerService = new RegisterService();
+    createGameService = new CreateGameService(gameDao);
+    listGamesService = new ListGamesService(gameDao);
+    registerService = new RegisterService(authDao, userDao);
     authDao = AuthDaoInMemory.getInstance();
     gameDao = GameDaoInMemory.getInstance();
 
