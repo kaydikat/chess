@@ -1,15 +1,25 @@
 package dataaccess;
 
-import chess.ChessGame;
-import model.AuthData;
-import model.GameData;
 import model.UserData;
+import password.PasswordUtil;
 
 import java.sql.SQLException;
 
 public class UserDaoSQL implements UserDao {
-  public void createUser(UserData user) throws DataAccessException {
+  private static UserDaoSQL instance;
+    private UserDaoSQL() {}
 
+    public static UserDaoSQL getInstance() {
+      if (instance == null) {
+        instance = new UserDaoSQL();
+      }
+      return instance;
+    }
+  public void createUser(UserData user) throws DataAccessException {
+      if (getUser(user.username()) != null) {
+        throw new DataAccessException("User already exists");
+      }
+      PasswordUtil.storeUserPassword(user.username(), user.password(), user.email());
   }
 
   public UserData getUser(String username) throws DataAccessException {

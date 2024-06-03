@@ -24,15 +24,18 @@ class ListGamesServiceTest {
 
   @BeforeEach
   public void setUp() {
+    authDao = AuthDaoInMemory.getInstance();
+    gameDao = GameDaoInMemory.getInstance();
+    userDao = UserDaoInMemory.getInstance();
+
     createGameService = new CreateGameService(gameDao);
     listGamesService = new ListGamesService(gameDao);
     registerService = new RegisterService(authDao, userDao);
-    authDao = AuthDaoInMemory.getInstance();
-    gameDao = GameDaoInMemory.getInstance();
 
     // Clear data before each test
     authDao.clear();
     gameDao.clear();
+    userDao.clear();
 
     // Set up the register request
     registerRequest = new RegisterRequest("testUser", "password123", "email@example.com");

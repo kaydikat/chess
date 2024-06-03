@@ -19,14 +19,15 @@ class LoginServiceTest {
 
   @BeforeEach
   public void setUp() {
-    loginService = new LoginService(authDao, userDao);
-    registerService = new RegisterService(authDao, userDao);
     authDao = AuthDaoInMemory.getInstance();
     userDao = UserDaoInMemory.getInstance();
 
     // Clear data before each test
     authDao.clear();
     userDao.clear();
+
+    loginService = new LoginService(authDao, userDao);
+    registerService = new RegisterService(authDao, userDao);
 
     // Set up the login and register requests
     loginRequest = new LoginRequest("testUser", "password123");
@@ -83,4 +84,3 @@ class LoginServiceTest {
     }
   }
 }
-

@@ -17,16 +17,23 @@ public class LogoutServiceTest {
   private AuthDaoInMemory authDao;
   private UserDaoInMemory userDao;
 
-  private final LoginService loginService = new LoginService(authDao, userDao);
-  private final RegisterService registerService = new RegisterService(authDao, userDao);
-  private final LogoutService logoutService = new LogoutService(authDao);
+  private LoginService loginService;
+  private RegisterService registerService;
+  private LogoutService logoutService;
   private RegisterRequest registerRequest;
   private LoginRequest loginRequest;
 
   @BeforeEach
   public void setUp() {
     authDao = AuthDaoInMemory.getInstance();
+    userDao = UserDaoInMemory.getInstance();
+
     authDao.clear();
+    userDao.clear();
+
+    loginService = new LoginService(authDao, userDao);
+    registerService = new RegisterService(authDao, userDao);
+    logoutService = new LogoutService(authDao);
 
     registerRequest = new RegisterRequest("testUser", "password123", "email@example.com");
     loginRequest = new LoginRequest("testUser", "password123");

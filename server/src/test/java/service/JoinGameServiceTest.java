@@ -25,12 +25,13 @@ class JoinGameServiceTest {
 
   @BeforeEach
   public void setUp() {
-    joinGameService = new JoinGameService(gameDao, userDao);
-    createGameService = new CreateGameService(gameDao);
-    registerService = new RegisterService(authDao, userDao);
     authDao = AuthDaoInMemory.getInstance();
     gameDao = GameDaoInMemory.getInstance();
     userDao = UserDaoInMemory.getInstance();
+
+    joinGameService = new JoinGameService(gameDao, userDao);
+    createGameService = new CreateGameService(gameDao);
+    registerService = new RegisterService(authDao, userDao);
 
     // Clear data before each test
     authDao.clear();

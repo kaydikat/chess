@@ -4,6 +4,7 @@ import dataaccess.*;
 import model.UserData;
 import request.LoginRequest;
 import result.LoginResult;
+import password.PasswordUtil;
 
 import java.util.UUID;
 
@@ -22,7 +23,10 @@ public class LoginService {
     if (user == null) {
       return new LoginResult(null, null, "error: unauthorized");
     }
-    if (!user.password().equals(request.password())) {
+    if (!PasswordUtil.verifyUser(request.username(), request.password())) {
+      if (!user.password().equals(request.password())) {
+        return new LoginResult(null, null, "error: unauthorized");
+      }
       return new LoginResult(null, null, "error: unauthorized");
     }
 

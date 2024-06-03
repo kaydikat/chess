@@ -18,7 +18,7 @@ public class RegisterServiceTest {
   @BeforeEach
   public void setUp() {
     authDao = AuthDaoSQL.getInstance();
-    userDao = UserDaoInMemory.getInstance();
+    userDao = UserDaoSQL.getInstance();
     registerService = new RegisterService(authDao, userDao);
 
     // Clear data before each test

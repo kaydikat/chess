@@ -19,7 +19,6 @@ public class CreateGameServiceTest {
 
   @BeforeEach
   public void setUp() {
-    createGameService = new CreateGameService(gameDao);
     authDao = AuthDaoInMemory.getInstance();
     gameDao = GameDaoInMemory.getInstance();
 
@@ -29,6 +28,9 @@ public class CreateGameServiceTest {
 
     // Add a test user and authorization token
     authDao.createAuth("testUser");
+
+    // Initialize createGameService after gameDao is initialized
+    createGameService = new CreateGameService(gameDao);
   }
 
   @Test
