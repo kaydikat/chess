@@ -18,7 +18,7 @@ public class ListGamesService {
   public ListGamesService(GameDao gameDao) {
     this.gameDao = gameDao;
   }
-  public ListGamesResult listGames(ListGamesRequest request) {
+  public ListGamesResult listGames(ListGamesRequest request) throws DataAccessException {
     if (checkAuth(request.authToken())) {
       Collection<GameData> games = gameDao.listGames();
       return new ListGamesResult(games,null);

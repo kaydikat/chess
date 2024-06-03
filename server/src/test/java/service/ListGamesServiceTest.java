@@ -68,7 +68,7 @@ class ListGamesServiceTest {
   }
 
   @Test
-  public void testListGamesWithInvalidAuth() {
+  public void testListGamesWithInvalidAuth() throws DataAccessException {
     // List games with an invalid auth token
     ListGamesRequest listGamesRequest = new ListGamesRequest("invalidAuthToken");
     ListGamesResult result = listGamesService.listGames(listGamesRequest);
