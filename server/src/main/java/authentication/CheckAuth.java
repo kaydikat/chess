@@ -1,12 +1,14 @@
 package authentication;
 
+import dataaccess.AuthDao;
 import dataaccess.AuthDaoInMemory;
+import dataaccess.AuthDaoSQL;
 import model.AuthData;
 
 public class CheckAuth {
 
     public static boolean checkAuth(String authToken) {
-        AuthDaoInMemory authDao = AuthDaoInMemory.getInstance();
+        AuthDao authDao = AuthDaoInMemory.getInstance();
         try {
             AuthData auth = authDao.getAuth(authToken);
             return auth != null;
