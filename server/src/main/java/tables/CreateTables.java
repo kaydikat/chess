@@ -32,7 +32,7 @@ public class CreateTables {
     return new String[] {
             """
             CREATE TABLE IF NOT EXISTS game (
-                gameID INT NOT NULL AUTO_INCREMENT,
+                gameID INT NOT NULL,
                 whiteUsername VARCHAR(100),
                 blackUsername VARCHAR(100),
                 gameName VARCHAR(100) NOT NULL,

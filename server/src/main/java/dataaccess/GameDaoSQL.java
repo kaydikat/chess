@@ -2,6 +2,7 @@ package dataaccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import model.AuthData;
 import model.GameData;
 
 import java.util.Collection;
@@ -44,6 +45,25 @@ public class GameDaoSQL implements GameDao {
   }
 
   public GameData getGame(Integer gameID) throws DataAccessException {
+    try (var conn = DatabaseManager.getConnection()) {
+      var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM game WHERE gameID=?";
+      try (var preparedStatement = conn.prepareStatement(statement)) {
+        preparedStatement.setInt(1, gameID);
+        try (var rs = preparedStatement.executeQuery()) {
+          if (rs.next()) {
+           int id = rs.getInt("gameID");
+           String whiteUsername = rs.getString("whiteUsername");
+           String blackUsername = rs.getString("blackUsername");
+           String gameName = rs.getString("gameName");
+           String gameText = rs.getString("game");
+           ChessGame game = deserializeGame(gameText).game();
+           return new GameData(id, whiteUsername, blackUsername, gameName, game);
+          }
+        }
+      }
+    } catch (Exception e) {
+      throw new DataAccessException("Unable to read data: " + e.getMessage());
+    }
     return null;
   }
 
