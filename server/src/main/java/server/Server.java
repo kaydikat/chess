@@ -6,10 +6,22 @@ import spark.*;
 
 public class Server {
 
+    static AuthDao authDao = AuthDaoSQL.getInstance();
+    static UserDao userDao = UserDaoSQL.getInstance();
+    static GameDao gameDao = GameDaoSQL.getInstance();
+
+    public static void clearService() {
+        authDao.clear();
+        userDao.clear();
+        gameDao.clear();
+    }
+
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
+
+        clearService();
 
         // Register your endpoints and handle exceptions here.
         createEndpoints();
@@ -25,9 +37,6 @@ public class Server {
         Spark.awaitStop();
     }
     private static void createEndpoints() {
-        AuthDao authDao = AuthDaoSQL.getInstance();
-        UserDao userDao = UserDaoSQL.getInstance();
-        GameDao gameDao = GameDaoSQL.getInstance();
 
         Spark.delete("/db", (req, res) -> (new ClearHandler(authDao, userDao, gameDao).handleRequest(req.body())));
         Spark.post("/user", (req, res) ->
