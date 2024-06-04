@@ -29,6 +29,9 @@ public class GameDaoInMemory extends AbstractGameDao {
 
   @Override
   public GameData getGame(Integer gameID) throws DataAccessException {
+    if (!games.containsKey(gameID)) {
+      throw new DataAccessException("Game not found");
+    }
     return games.get(gameID);
   }
 
