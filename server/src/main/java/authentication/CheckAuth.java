@@ -8,8 +8,8 @@ import model.AuthData;
 public class CheckAuth {
 
     public static boolean checkAuth(String authToken) {
-        AuthDao authDao = AuthDaoSQL.getInstance();
       try {
+          AuthDao authDao = AuthDaoSQL.getInstance();
           AuthData auth = authDao.getAuthWithAuthToken(authToken);
           return auth != null;
         } catch (Exception e) {

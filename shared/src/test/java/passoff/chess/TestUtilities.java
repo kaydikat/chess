@@ -1,7 +1,6 @@
 package passoff.chess;
 
 import chess.*;
-import chess.ChessPiece;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.Collection;
