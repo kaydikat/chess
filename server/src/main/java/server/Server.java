@@ -7,9 +7,9 @@ import spark.*;
 
 public class Server {
 
-    static AuthDao authDao = AuthDaoSQL.getInstance();
-    static UserDao userDao = UserDaoSQL.getInstance();
-    static GameDao gameDao = GameDaoSQL.getInstance();
+    static AuthDao authDao = AuthDaoInMemory.getInstance();
+    static UserDao userDao = UserDaoInMemory.getInstance();
+    static GameDao gameDao = GameDaoInMemory.getInstance();
 
 
     public int run(int desiredPort) {
