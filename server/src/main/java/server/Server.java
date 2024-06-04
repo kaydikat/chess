@@ -13,6 +13,11 @@ public class Server {
 
 
     public int run(int desiredPort) {
+        try {
+            DatabaseManager.createDatabase();
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
