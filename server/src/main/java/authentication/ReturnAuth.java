@@ -8,8 +8,7 @@ import model.AuthData;
 public class ReturnAuth {
 
   public static String returnAuth(String authToken) {
-    AuthDao authDao = AuthDaoSQL.getInstance();
-    authDao = AuthDaoSQL.getInstance();
+    AuthDao authDao = AuthDaoInMemory.getInstance();
     try {
       AuthData auth = authDao.getAuthWithAuthToken(authToken);
       return auth.username();

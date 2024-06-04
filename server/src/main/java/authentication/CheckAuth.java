@@ -9,8 +9,8 @@ public class CheckAuth {
 
     public static boolean checkAuth(String authToken) {
       try {
-          AuthDao authDao = AuthDaoSQL.getInstance();
-          AuthData auth = authDao.getAuthWithAuthToken(authToken);
+          AuthDao authDao = AuthDaoInMemory.getInstance();
+          AuthData auth = authDao.getAuth(authToken);
           return auth != null;
         } catch (Exception e) {
             return false;
