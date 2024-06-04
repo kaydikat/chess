@@ -19,11 +19,6 @@ public class AuthDaoInMemory implements AuthDao {
     return instance;
   }
 
-  public Map<String, AuthData> getAuths() {
-    return auths;
-  }
-
-
   public void createAuth(String username) {
     String authToken = UUID.randomUUID().toString();
     AuthData auth = new AuthData(authToken, username);

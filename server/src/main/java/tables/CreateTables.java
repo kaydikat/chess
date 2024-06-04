@@ -4,7 +4,7 @@ public class CreateTables {
   public CreateTables() {
   }
 
-  public final String[] UserTable() {
+  public final String[] userTable() {
     return new String[] {
             """
             CREATE TABLE IF NOT EXISTS user (
@@ -16,7 +16,7 @@ public class CreateTables {
             """
     };
   }
-  public String[] AuthTable() {
+  public String[] authTable() {
     return new String[] {
             """
             CREATE TABLE IF NOT EXISTS auth (
@@ -29,7 +29,7 @@ public class CreateTables {
     };
   }
 
-  public String[] GameTable() {
+  public String[] gameTable() {
     return new String[] {
             """
             CREATE TABLE IF NOT EXISTS game (
@@ -46,9 +46,9 @@ public class CreateTables {
 
   public String[] allTables() {
     return new String[] {
-            UserTable()[0],
-            AuthTable()[0],
-            GameTable()[0]
+            userTable()[0],
+            authTable()[0],
+            gameTable()[0]
     };
   }
 }
