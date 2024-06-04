@@ -1,8 +1,8 @@
 package service;
 
-import dataaccess.authDaos.AuthDao;
-import dataaccess.gameDaos.GameDao;
-import dataaccess.userDaos.UserDao;
+import dataaccess.authdaos.AuthDao;
+import dataaccess.gamedaos.GameDao;
+import dataaccess.userdaos.UserDao;
 import request.ClearRequest;
 import result.ClearResult;
 

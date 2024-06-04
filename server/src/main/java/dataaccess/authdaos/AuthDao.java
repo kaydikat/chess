@@ -1,4 +1,4 @@
-package dataaccess.authDaos;
+package dataaccess.authdaos;
 
 import dataaccess.DataAccessException;
 import model.AuthData;

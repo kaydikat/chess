@@ -1,7 +1,7 @@
 package service;
 
 import authentication.CheckAuth2;
-import dataaccess.authDaos.AuthDao;
+import dataaccess.authdaos.AuthDao;
 import dataaccess.DataAccessException;
 import request.LogoutRequest;
 import result.LogoutResult;

@@ -1,7 +1,7 @@
 package handlers;
 
 import com.google.gson.Gson;
-import dataaccess.gameDaos.GameDao;
+import dataaccess.gamedaos.GameDao;
 import request.CreateGameRequest;
 import result.CreateGameResult;
 import service.CreateGameService;

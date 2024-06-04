@@ -1,8 +1,8 @@
 package handlers;
 
 import com.google.gson.Gson;
-import dataaccess.authDaos.AuthDao;
-import dataaccess.userDaos.UserDao;
+import dataaccess.authdaos.AuthDao;
+import dataaccess.userdaos.UserDao;
 import service.LoginService;
 import request.LoginRequest;
 import result.LoginResult;

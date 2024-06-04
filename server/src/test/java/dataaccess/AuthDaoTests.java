@@ -1,44 +1,83 @@
 package dataaccess;
 
-import dataaccess.authDaos.AuthDao;
-import dataaccess.authDaos.AuthDaoSQL;
-import dataaccess.userDaos.UserDao;
-import dataaccess.userDaos.UserDaoInMemory;
+import dataaccess.DataAccessException;
+import dataaccess.authdaos.AuthDao;
+import dataaccess.authdaos.AuthDaoInMemory;
+import dataaccess.authdaos.AuthDaoSQL;
+import model.AuthData;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AuthDaoTests {
   private AuthDao authDao;
-  private UserDao userDao;
 
   @BeforeEach
   public void setUp() {
-    this.authDao = AuthDaoSQL.getInstance();
-    this.userDao = UserDaoInMemory.getInstance();
+    authDao =AuthDaoInMemory.getInstance(); // Or use AuthDaoInMemory for in-memory testing
     authDao.clear();
-    userDao.clear();
   }
 
   @Test
-  void createAuthTest() throws DataAccessException {
+  public void testCreateAuthPositive() throws DataAccessException {
+    authDao.createAuth("user1");
+    AuthData retrievedAuth = authDao.getAuth("user1");
+    assertNotNull(retrievedAuth, "Expected the auth data to be created and retrieved successfully");
+  }
+
+  @Test
+  public void testCreateAuthDuplicateNegative() {
+    assertThrows(DataAccessException.class, () -> {
+      authDao.createAuth("user1");
+      authDao.createAuth("user1"); // Attempt to create duplicate auth data
+    });
+  }
+
+  @Test
+  public void testGetAuthPositive() throws DataAccessException {
+    authDao.createAuth("user1");
+    AuthData retrievedAuth = authDao.getAuth("user1");
+    assertNotNull(retrievedAuth, "Expected to retrieve auth data for user1");
+  }
+
+  @Test
+  public void testGetAuthNegative() {
+    assertThrows(DataAccessException.class, () -> {
+      authDao.getAuth("nonexistentUser");
+    });
+  }
+
+  @Test
+  public void testGetAuthWithAuthTokenPositive() throws DataAccessException {
     authDao.createAuth("user1");
     String authToken = authDao.getAuth("user1").authToken();
-    assert(authToken != null);
+    AuthData retrievedAuth = authDao.getAuthWithAuthToken(authToken); // Assume the auth token for user1 is "user1AuthToken"
+    assertNotNull(retrievedAuth, "Expected to retrieve auth data with auth token");
   }
 
   @Test
-  void getAuth() {
+  public void testGetAuthWithAuthTokenNegative() {
+    assertThrows(DataAccessException.class, () -> {
+      authDao.getAuthWithAuthToken("nonexistentAuthToken");
+    });
   }
 
   @Test
-  void getAuthWithAuthToken() {
+  public void testDeleteAuthPositive() throws DataAccessException {
+    authDao.createAuth("user1");
+    String authToken = authDao.getAuth("user1").authToken();
+    authDao.deleteAuth(authToken); // Assume the auth token for user1 is "user1AuthToken"
+    assertThrows(DataAccessException.class, () -> {
+      authDao.getAuthWithAuthToken(authToken);
+    });
   }
 
   @Test
-  void deleteAuth() {
-  }
-
-  @Test
-  void clear() {
+  public void testClear() throws DataAccessException {
+    authDao.createAuth("user1");
+    authDao.clear();
+    assertThrows(DataAccessException.class, () -> {
+      authDao.getAuth("user1");
+    });
   }
 }

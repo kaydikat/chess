@@ -1,4 +1,4 @@
-package dataaccess.userDaos;
+package dataaccess.userdaos;
 
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;

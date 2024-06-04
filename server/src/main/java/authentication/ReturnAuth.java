@@ -1,7 +1,7 @@
 package authentication;
 
-import dataaccess.authDaos.AuthDao;
-import dataaccess.authDaos.AuthDaoSQL;
+import dataaccess.authdaos.AuthDao;
+import dataaccess.authdaos.AuthDaoSQL;
 import model.AuthData;
 
 public class ReturnAuth {

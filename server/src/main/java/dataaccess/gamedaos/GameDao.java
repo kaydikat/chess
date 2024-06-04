@@ -1,4 +1,4 @@
-package dataaccess.gameDaos;
+package dataaccess.gamedaos;
 
 import dataaccess.DataAccessException;
 import model.GameData;

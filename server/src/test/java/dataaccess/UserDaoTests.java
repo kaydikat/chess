@@ -1,7 +1,7 @@
 package dataaccess;
 
-import dataaccess.userDaos.UserDao;
-import dataaccess.userDaos.UserDaoInMemory;
+import dataaccess.userdaos.UserDao;
+import dataaccess.userdaos.UserDaoInMemory;
 import model.UserData;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;

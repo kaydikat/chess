@@ -1,12 +1,10 @@
-package dataaccess.gameDaos;
+package dataaccess.gamedaos;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
-import dataaccess.gameDaos.GameDao;
 import model.GameData;
 
-import java.util.Collection;
 import java.util.Random;
 
 public abstract class AbstractGameDao implements GameDao {

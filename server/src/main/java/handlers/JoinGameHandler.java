@@ -1,8 +1,8 @@
 package handlers;
 
 import com.google.gson.Gson;
-import dataaccess.gameDaos.GameDao;
-import dataaccess.userDaos.UserDao;
+import dataaccess.gamedaos.GameDao;
+import dataaccess.userdaos.UserDao;
 import request.JoinGameRequest;
 import result.JoinGameResult;
 import service.JoinGameService;

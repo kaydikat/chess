@@ -1,8 +1,8 @@
 package service;
 
 import dataaccess.*;
-import dataaccess.gameDaos.GameDao;
-import dataaccess.userDaos.UserDao;
+import dataaccess.gamedaos.GameDao;
+import dataaccess.userdaos.UserDao;
 import model.GameData;
 import request.JoinGameRequest;
 import result.JoinGameResult;

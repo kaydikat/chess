@@ -1,4 +1,4 @@
-package dataaccess.authDaos;
+package dataaccess.authdaos;
 
 import dataaccess.DataAccessException;
 import model.AuthData;
@@ -20,7 +20,10 @@ public class AuthDaoInMemory implements AuthDao {
     return instance;
   }
 
-  public void createAuth(String username) {
+  public void createAuth(String username) throws DataAccessException {
+    if (auths.containsKey(username)) {
+      throw new DataAccessException("Auth already exists");
+    }
     String authToken = UUID.randomUUID().toString();
     AuthData auth = new AuthData(authToken, username);
 
