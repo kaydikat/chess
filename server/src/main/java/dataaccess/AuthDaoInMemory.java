@@ -53,6 +53,7 @@ public class AuthDaoInMemory implements AuthDao {
     auths.remove(authToken);
     auths.remove(auth.username());
   }
+
   public void clear() {
     auths.clear();
   }

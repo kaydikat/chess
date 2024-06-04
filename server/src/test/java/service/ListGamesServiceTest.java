@@ -1,9 +1,6 @@
 package service;
 
-import dataaccess.AuthDaoInMemory;
-import dataaccess.GameDaoInMemory;
-import dataaccess.DataAccessException;
-import dataaccess.UserDaoInMemory;
+import dataaccess.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import request.CreateGameRequest;
@@ -17,16 +14,16 @@ class ListGamesServiceTest {
   private CreateGameService createGameService;
   private ListGamesService listGamesService;
   private RegisterService registerService;
-  private AuthDaoInMemory authDao;
-  private GameDaoInMemory gameDao;
-  private UserDaoInMemory userDao;
+  private AuthDao authDao;
+  private GameDao gameDao;
+  private UserDao userDao;
   private RegisterRequest registerRequest;
 
   @BeforeEach
   public void setUp() {
-    authDao = AuthDaoInMemory.getInstance();
-    gameDao = GameDaoInMemory.getInstance();
-    userDao = UserDaoInMemory.getInstance();
+    authDao = AuthDaoSQL.getInstance();
+    gameDao = GameDaoSQL.getInstance();
+    userDao = UserDaoSQL.getInstance();
 
     createGameService = new CreateGameService(gameDao);
     listGamesService = new ListGamesService(gameDao);
@@ -47,7 +44,7 @@ class ListGamesServiceTest {
 
     String authToken = authDao.getAuth("testUser").authToken();
 
-    assertNotNull(authDao.getAuth(authToken), "Auth token should be valid after registration");
+    assertNotNull(authDao.getAuthWithAuthToken(authToken), "Auth token should be valid after registration");
 
     // Create some games
     CreateGameRequest createGameRequest = new CreateGameRequest(authToken, "Chess1");

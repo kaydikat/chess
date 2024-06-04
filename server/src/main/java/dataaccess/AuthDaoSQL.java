@@ -21,13 +21,14 @@ public class AuthDaoSQL implements AuthDao {
 
 
   public void createAuth(String username) throws DataAccessException {
-    //insert username, authToken int auth
-    String authToken=UUID.randomUUID().toString();
+    String authToken = UUID.randomUUID().toString();
+    AuthData auth = new AuthData(authToken, username);
+
     try (var conn = DatabaseManager.getConnection()) {
-      var statement="INSERT INTO auth (authToken, username) VALUES (?, ?)";
-      try (var preparedStatement=conn.prepareStatement(statement)) {
-        preparedStatement.setString(1, authToken);
-        preparedStatement.setString(2, username);
+      var statement = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
+      try (var preparedStatement = conn.prepareStatement(statement)) {
+        preparedStatement.setString(1, auth.authToken());
+        preparedStatement.setString(2, auth.username());
         preparedStatement.executeUpdate();
       }
     } catch (Exception e) {
@@ -37,19 +38,20 @@ public class AuthDaoSQL implements AuthDao {
 
   public AuthData getAuth(String username) throws DataAccessException {
     try (var conn = DatabaseManager.getConnection()) {
-      var statement = "SELECT authToken, username FROM auth WHERE username=?";
+      var statement = "SELECT authToken, username FROM auth WHERE username=? ORDER BY id DESC LIMIT 1";
       try (var preparedStatement = conn.prepareStatement(statement)) {
         preparedStatement.setString(1, username);
         try (var rs = preparedStatement.executeQuery()) {
           if (rs.next()) {
             return new AuthData(rs.getString("authToken"), rs.getString("username"));
+          } else {
+            throw new DataAccessException("Auth not found");
           }
         }
       }
     } catch (Exception e) {
       throw new DataAccessException("Unable to read data: " + e.getMessage());
     }
-    return null;
   }
   public AuthData getAuthWithAuthToken(String authToken) throws DataAccessException {
     try (var conn = DatabaseManager.getConnection()) {

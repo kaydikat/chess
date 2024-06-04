@@ -1,9 +1,6 @@
 package service;
 
-import dataaccess.AuthDaoInMemory;
-import dataaccess.DataAccessException;
-import dataaccess.GameDaoInMemory;
-import dataaccess.UserDaoInMemory;
+import dataaccess.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import request.LoginRequest;
@@ -14,8 +11,8 @@ import result.LogoutResult;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LogoutServiceTest {
-  private AuthDaoInMemory authDao;
-  private UserDaoInMemory userDao;
+  private AuthDao authDao;
+  private UserDao userDao;
 
   private LoginService loginService;
   private RegisterService registerService;
@@ -25,8 +22,8 @@ public class LogoutServiceTest {
 
   @BeforeEach
   public void setUp() {
-    authDao = AuthDaoInMemory.getInstance();
-    userDao = UserDaoInMemory.getInstance();
+    authDao = AuthDaoSQL.getInstance();
+    userDao = UserDaoSQL.getInstance();
 
     authDao.clear();
     userDao.clear();
@@ -41,17 +38,14 @@ public class LogoutServiceTest {
 
   @Test
   public void testLogoutWithValidAuth() throws DataAccessException {
-    // Register a user and login
     registerService.register(registerRequest);
     String authToken = loginService.login(loginRequest).authToken();
 
-    // Logout with the valid auth token
     LogoutRequest logoutRequest = new LogoutRequest(authToken);
     LogoutResult result = logoutService.logout(logoutRequest);
 
     assertEquals(null, result.message(), "Expected no error message for successful logout");
 
-    // Verify that the auth token is invalidated
     assertThrows(DataAccessException.class, () -> authDao.getAuth(authToken), "Expected DataAccessException for invalidated auth token");
   }
 

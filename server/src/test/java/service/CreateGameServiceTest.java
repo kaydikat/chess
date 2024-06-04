@@ -1,8 +1,7 @@
 package service;
 
-import dataaccess.AuthDaoInMemory;
-import dataaccess.GameDaoInMemory;
-import dataaccess.DataAccessException;
+import dataaccess.*;
+import model.AuthData;
 import model.GameData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,13 +13,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CreateGameServiceTest {
 
   private CreateGameService createGameService;
-  private AuthDaoInMemory authDao;
-  private GameDaoInMemory gameDao;
+  private AuthDao authDao;
+  private GameDao gameDao;
 
   @BeforeEach
-  public void setUp() {
-    authDao = AuthDaoInMemory.getInstance();
-    gameDao = GameDaoInMemory.getInstance();
+  public void setUp() throws DataAccessException {
+    authDao = AuthDaoSQL.getInstance();
+    gameDao = GameDaoSQL.getInstance();
 
     // Clear data before each test
     authDao.clear();
@@ -36,12 +35,22 @@ public class CreateGameServiceTest {
   @Test
   public void testCreateGameWithValidAuth() {
     // Get the valid auth token
-    String validAuthToken = authDao.getAuths().values().stream()
-            .filter(auth -> auth.username().equals("testUser"))
-            .findFirst()
-            .map(auth -> auth.authToken())
-            .orElse(null);
+    String testUsername = "testUser";
+    try {
+      authDao.createAuth(testUsername);
+    } catch (DataAccessException e) {
+      fail("Error creating auth: " + e.getMessage());
+    }
 
+    // Retrieve the valid auth token
+    AuthData authData = null;
+    try {
+      authData = authDao.getAuth(testUsername);
+    } catch (DataAccessException e) {
+      fail("Error retrieving auth: " + e.getMessage());
+    }
+
+    String validAuthToken = authData != null ? authData.authToken() : null;
     assertNotNull(validAuthToken, "Valid auth token should not be null");
 
     // Create a game request with valid auth token

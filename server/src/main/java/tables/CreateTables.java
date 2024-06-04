@@ -20,9 +20,10 @@ public class CreateTables {
     return new String[] {
             """
             CREATE TABLE IF NOT EXISTS auth (
+                id INT NOT NULL AUTO_INCREMENT,
                 authToken VARCHAR(36) NOT NULL,
                 username VARCHAR(100) NOT NULL,
-                PRIMARY KEY (authToken)
+                PRIMARY KEY (id)
             )
             """
     };
