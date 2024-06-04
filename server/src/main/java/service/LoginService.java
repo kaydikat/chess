@@ -16,28 +16,25 @@ public class LoginService {
     this.authDao = authDao;
     this.userDao = userDao;
   }
-  public LoginResult login(LoginRequest request) throws DataAccessException {
 
-    UserData user = userDao.getUser(request.username());
-    if (user == null) {
-      return new LoginResult(null, null, "error: unauthorized");
-    }
-    if (!user.password().equals(request.password())) {
-      if (PasswordUtil.verifyUser(request.username(), request.password())) {
-        authDao.createAuth(request.username());
-        String authToken = authDao.getAuth(request.username()).authToken();
-        System.out.println("authToken: " + authToken);
-
-        return new LoginResult(request.username(), authToken, null);
-        }
-      return new LoginResult(null, null, "error: unauthorized");
-    }
-
-
-    authDao.createAuth(request.username());
-    String authToken = authDao.getAuth(request.username()).authToken();
-    System.out.println("authToken: " + authToken);
-
-    return new LoginResult(request.username(), authToken, null);
+public LoginResult login(LoginRequest request) throws DataAccessException {
+  UserData user = userDao.getUser(request.username());
+  if (user == null) {
+    return new LoginResult(null, null, "error: unauthorized");
   }
+  if (!user.password().equals(request.password())) {
+    if (PasswordUtil.verifyUser(request.username(), request.password())) {
+      authDao.createAuth(request.username());
+      String authToken = authDao.getAuth(request.username()).authToken();
+      System.out.println("authToken3: " + authToken);
+
+      return new LoginResult(request.username(), authToken, null);
+    }
+    return new LoginResult(null, null, "error: unauthorized");
+  }
+  authDao.createAuth(request.username());
+  String authToken = authDao.getAuth(request.username()).authToken();
+  System.out.println("authToken: " + authToken);
+  return new LoginResult(request.username(), authToken, null);
+}
 }
