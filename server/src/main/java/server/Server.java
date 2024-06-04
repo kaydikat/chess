@@ -25,9 +25,9 @@ public class Server {
         Spark.awaitStop();
     }
     private static void createEndpoints() {
-        AuthDao authDao = AuthDaoInMemory.getInstance();
-        UserDao userDao = UserDaoInMemory.getInstance();
-        GameDao gameDao = GameDaoInMemory.getInstance();
+        AuthDao authDao = AuthDaoSQL.getInstance();
+        UserDao userDao = UserDaoSQL.getInstance();
+        GameDao gameDao = GameDaoSQL.getInstance();
 
         Spark.delete("/db", (req, res) -> (new ClearHandler(authDao, userDao, gameDao).handleRequest(req.body())));
         Spark.post("/user", (req, res) ->

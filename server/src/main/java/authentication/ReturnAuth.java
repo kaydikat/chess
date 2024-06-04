@@ -1,14 +1,17 @@
 package authentication;
 
+import dataaccess.AuthDao;
 import dataaccess.AuthDaoInMemory;
+import dataaccess.AuthDaoSQL;
 import model.AuthData;
 
 public class ReturnAuth {
 
   public static String returnAuth(String authToken) {
-    AuthDaoInMemory authDao = AuthDaoInMemory.getInstance();
+    AuthDao authDao = AuthDaoSQL.getInstance();
+    authDao = AuthDaoSQL.getInstance();
     try {
-      AuthData auth = authDao.getAuth(authToken);
+      AuthData auth = authDao.getAuthWithAuthToken(authToken);
       return auth.username();
     } catch (Exception e) {
       return null;

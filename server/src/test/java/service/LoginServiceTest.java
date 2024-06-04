@@ -19,7 +19,7 @@ class LoginServiceTest {
 
   @BeforeEach
   public void setUp() {
-    authDao = AuthDaoInMemory.getInstance();
+    authDao = AuthDaoSQL.getInstance();
     userDao = UserDaoInMemory.getInstance();
 
     // Clear data before each test
