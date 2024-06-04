@@ -60,15 +60,14 @@ public class GameDaoTests {
   @Test
   public void testAddColorPositive() throws DataAccessException {
     GameData createdGame = gameDao.createGame("TestGame");
-    //gameDao.addColor(createdGame.getGameID(), "Red", "user1");
-   // GameData updatedGame = gameDao.getGame(createdGame.getGameID());
-    //assertTrue(updatedGame.getPlayerColors().containsKey("Red"), "Expected the game to have the 'Red' color added for user1");
-  }
+    gameDao.addColor(createdGame.gameID(), "WHITE", "user1");
+    GameData updatedGame = gameDao.getGame(createdGame.gameID());
+    assertEquals("user1", updatedGame.whiteUsername(), "Expected the white player to be added");}
 
   @Test
   public void testAddColorNegative() {
     assertThrows(DataAccessException.class, () -> {
-      gameDao.addColor(999, "Red", "user1"); // Assuming 999 is an invalid game ID
+      gameDao.addColor(999, "Red", "user1");
     });
   }
 
