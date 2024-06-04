@@ -2,6 +2,7 @@ package server;
 
 import dataaccess.*;
 import handlers.*;
+import service.ClearService;
 import spark.*;
 
 public class Server {
@@ -10,18 +11,11 @@ public class Server {
     static UserDao userDao = UserDaoSQL.getInstance();
     static GameDao gameDao = GameDaoSQL.getInstance();
 
-    public static void clearService() {
-        authDao.clear();
-        userDao.clear();
-        gameDao.clear();
-    }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
-
-        clearService();
 
         // Register your endpoints and handle exceptions here.
         createEndpoints();
@@ -37,6 +31,7 @@ public class Server {
         Spark.awaitStop();
     }
     private static void createEndpoints() {
+        new ClearService(authDao, userDao, gameDao);
 
         Spark.delete("/db", (req, res) -> (new ClearHandler(authDao, userDao, gameDao).handleRequest(req.body())));
         Spark.post("/user", (req, res) ->
