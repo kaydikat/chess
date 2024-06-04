@@ -1,16 +1,13 @@
 package handlers;
 
 import com.google.gson.Gson;
-import dataaccess.GameDao;
-import model.GameData;
+import dataaccess.gameDaos.GameDao;
 import request.ListGamesRequest;
 import result.ListGamesResult;
 import service.ListGamesService;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-
-import java.util.Collection;
 
 public class ListGamesHandler implements Route {
   private final Gson gson;

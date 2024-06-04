@@ -1,5 +1,7 @@
-package dataaccess;
+package dataaccess.userDaos;
 
+import dataaccess.DataAccessException;
+import dataaccess.DatabaseManager;
 import model.UserData;
 import password.PasswordUtil;
 

@@ -1,8 +1,13 @@
 package server;
 
 import dataaccess.*;
+import dataaccess.authDaos.AuthDao;
+import dataaccess.authDaos.AuthDaoSQL;
+import dataaccess.gameDaos.GameDao;
+import dataaccess.gameDaos.GameDaoSQL;
+import dataaccess.userDaos.UserDao;
+import dataaccess.userDaos.UserDaoSQL;
 import handlers.*;
-import service.ClearService;
 import spark.*;
 
 public class Server {

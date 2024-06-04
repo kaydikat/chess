@@ -1,6 +1,10 @@
 package service;
 
 import dataaccess.*;
+import dataaccess.authDaos.AuthDao;
+import dataaccess.authDaos.AuthDaoSQL;
+import dataaccess.gameDaos.GameDao;
+import dataaccess.gameDaos.GameDaoSQL;
 import model.AuthData;
 import model.GameData;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,12 +1,12 @@
 package service;
 
 import dataaccess.*;
+import dataaccess.gameDaos.GameDao;
+import dataaccess.userDaos.UserDao;
 import model.GameData;
 import request.JoinGameRequest;
-import request.LoginRequest;
 import result.JoinGameResult;
 
-import static authentication.CheckAuth.checkAuth;
 import static authentication.ReturnAuth.returnAuth;
 
 public class JoinGameService {

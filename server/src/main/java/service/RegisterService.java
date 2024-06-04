@@ -1,6 +1,8 @@
 package service;
 
 import dataaccess.*;
+import dataaccess.authDaos.AuthDao;
+import dataaccess.userDaos.UserDao;
 import model.UserData;
 import request.RegisterRequest;
 import result.RegisterResult;

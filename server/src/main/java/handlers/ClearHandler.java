@@ -1,9 +1,9 @@
 package handlers;
 
 import com.google.gson.Gson;
-import dataaccess.AuthDao;
-import dataaccess.GameDao;
-import dataaccess.UserDao;
+import dataaccess.authDaos.AuthDao;
+import dataaccess.gameDaos.GameDao;
+import dataaccess.userDaos.UserDao;
 import service.ClearService;
 import request.ClearRequest;
 import result.ClearResult;

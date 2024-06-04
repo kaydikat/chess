@@ -1,34 +1,19 @@
-package dataaccess;
+package dataaccess.gameDaos;
 
 import chess.ChessGame;
+import com.google.gson.Gson;
+import dataaccess.DataAccessException;
+import dataaccess.gameDaos.GameDao;
 import model.GameData;
-import model.UserData;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
-public class GameDaoInMemory implements GameDao {
-  private static GameDaoInMemory instance;
-  private final Map<Integer, GameData> games = new HashMap<>();
+public abstract class AbstractGameDao implements GameDao {
+  protected final Gson gson = new Gson();
+  protected final Random random = new Random();
 
-  private GameDaoInMemory() {}
-
-  public static GameDaoInMemory getInstance() {
-    if (instance == null) {
-      instance = new GameDaoInMemory();
-    }
-    return instance;
-  }
-  private final Random random = new Random();
-
-  public Integer createGameID(GameData game) {
-    int newGameID = 1000 + random.nextInt(9000);
-    games.put(newGameID, game);
-    return newGameID;
-  }
-
+  @Override
   public GameData createGame(String gameName) throws DataAccessException {
     ChessGame newChessGame = new ChessGame();
     GameData game = new GameData(null, null, null, gameName, newChessGame);
@@ -36,21 +21,13 @@ public class GameDaoInMemory implements GameDao {
     game = new GameData(gameID, null, null, gameName, newChessGame);
     return game;
   }
-  public GameData getGame(Integer gameID) throws DataAccessException {
-    return games.get(gameID);
-  }
 
-  public Collection<GameData> listGames() {
-    System.out.println("game values " + games.values());
-    return games.values();
-  }
-
+  @Override
   public void addColor(Integer gameID, String playerColor, String username) throws DataAccessException {
-    GameData game = games.get(gameID);
+    GameData game = getGame(gameID);
     if (game == null) {
       throw new DataAccessException("Game not found");
     }
-
     String whiteUsername = game.whiteUsername();
     String blackUsername = game.blackUsername();
 
@@ -70,11 +47,16 @@ public class GameDaoInMemory implements GameDao {
       throw new DataAccessException("Invalid player color specified");
     }
 
-    game = new GameData(gameID, whiteUsername, blackUsername, game.gameName(), game.game());
-    games.put(gameID, game);
+    updateGameColor(gameID, whiteUsername, blackUsername);
   }
 
-  public void clear() {
-    games.clear();
+  protected abstract void updateGameColor(Integer gameID, String whiteUsername, String blackUsername) throws DataAccessException;
+
+  protected String serializeGame(GameData game) {
+    return gson.toJson(game);
+  }
+
+  protected GameData deserializeGame(String gameText) {
+    return gson.fromJson(gameText, GameData.class);
   }
 }

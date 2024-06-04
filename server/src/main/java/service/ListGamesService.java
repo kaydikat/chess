@@ -1,8 +1,7 @@
 package service;
 
 import dataaccess.DataAccessException;
-import dataaccess.GameDao;
-import dataaccess.GameDaoInMemory;
+import dataaccess.gameDaos.GameDao;
 import model.GameData;
 import request.ListGamesRequest;
 import result.ListGamesResult;

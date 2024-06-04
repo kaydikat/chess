@@ -1,6 +1,6 @@
 package authentication;
 
-import dataaccess.AuthDao;
+import dataaccess.authDaos.AuthDao;
 import model.AuthData;
 
 public class CheckAuth2 {

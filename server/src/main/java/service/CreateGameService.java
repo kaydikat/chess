@@ -1,12 +1,10 @@
 package service;
 
 import dataaccess.DataAccessException;
-import dataaccess.GameDao;
-import dataaccess.GameDaoInMemory;
+import dataaccess.gameDaos.GameDao;
 import model.GameData;
 import request.CreateGameRequest;
 import result.CreateGameResult;
-import result.ListGamesResult;
 
 import static authentication.CheckAuth.checkAuth;
 

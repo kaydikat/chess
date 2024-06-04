@@ -1,6 +1,8 @@
-package dataaccess;
+package dataaccess.userDaos;
 
 import java.sql.*;
+
+import dataaccess.DataAccessException;
 import model.UserData;
 
 public interface UserDao {

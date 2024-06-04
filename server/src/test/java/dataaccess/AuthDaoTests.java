@@ -1,10 +1,11 @@
 package dataaccess;
 
-import model.UserData;
+import dataaccess.authDaos.AuthDao;
+import dataaccess.authDaos.AuthDaoSQL;
+import dataaccess.userDaos.UserDao;
+import dataaccess.userDaos.UserDaoInMemory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
-import model.AuthData;
 
 public class AuthDaoTests {
   private AuthDao authDao;
