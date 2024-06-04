@@ -31,7 +31,6 @@ public class Server {
         Spark.awaitStop();
     }
     private static void createEndpoints() {
-        new ClearService(authDao, userDao, gameDao);
 
         Spark.delete("/db", (req, res) -> (new ClearHandler(authDao, userDao, gameDao).handleRequest(req.body())));
         Spark.post("/user", (req, res) ->
