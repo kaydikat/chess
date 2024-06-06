@@ -12,8 +12,6 @@ public class ChessBoardUi {
   private static final int SQUARE_SIZE_IN_CHARS = 3;
   private static final int LINE_WIDTH_IN_CHARS = 1;
   private static final String EMPTY = "   ";
-  private static final String X = " X ";
-  private static final String O = " O ";
   private static Random rand = new Random();
 
 
@@ -22,33 +20,43 @@ public class ChessBoardUi {
 
     out.print(ERASE_SCREEN);
 
-    drawHeaders(out);
+    drawHeaders(out, "white");
 
-    drawChessBoard(out);
+    drawChessBoard(out, "white");
 
     out.print(SET_BG_COLOR_BLACK);
     out.print(SET_TEXT_COLOR_WHITE);
   }
 
-  private static void drawHeaders(PrintStream out) {
-
+  private static void drawHeaders(PrintStream out, String player) {
     setBlack(out);
-
     String[] letterHeaders = { "A", "B", "C", "D", "E", "F", "G", "H" };
-    for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
-      drawHeader(out, letterHeaders[boardCol]);
+    out.print(" ".repeat(SQUARE_SIZE_IN_CHARS) );
+    if (player.equalsIgnoreCase("black")) {
+      for (int boardCol = 7; boardCol >= 0; --boardCol) {
+        drawHeader(out, letterHeaders[boardCol]);
+      }
+    } else {
+      for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
+        drawHeader(out, letterHeaders[boardCol]);
+      }
     }
 
     out.println();
   }
 
   private static void drawHeader(PrintStream out, String headerText) {
-    int prefixLength = 1;
-    int suffixLength = 0;
+    int prefixLength = SQUARE_SIZE_IN_CHARS / 2;
+    int suffixLength = SQUARE_SIZE_IN_CHARS - prefixLength - 1;
 
-    out.print(EMPTY.repeat(prefixLength));
+    out.print(" ".repeat(prefixLength));
     printHeaderText(out, headerText);
+    out.print(" ".repeat(suffixLength));
   }
+  private static void printRowNumberHeader(PrintStream out, int boardRow) {
+    printHeaderText(out, (" " + (8-boardRow) + " "));
+  }
+
 
   private static void printHeaderText(PrintStream out, String player) {
     out.print(SET_BG_COLOR_BLACK);
@@ -59,27 +67,37 @@ public class ChessBoardUi {
     setBlack(out);
   }
 
-  private static void drawChessBoard(PrintStream out) {
-
-    for (int boardRow = 0; boardRow < BOARD_SIZE_IN_SQUARES / 2; ++boardRow) {
-        drawRowOfSquares(out, "black");
-        drawRowOfSquares(out, "white");
+  private static void drawChessBoard(PrintStream out, String playerColor) {
+    if (playerColor.equalsIgnoreCase("black")) {
+      for (int boardRow=7; boardRow > -1; --boardRow) {
+        if (boardRow % 2 == 0) {
+          drawRowOfSquares(out, "white", boardRow);
+        } else {
+          drawRowOfSquares(out, "black", boardRow);
+        }
+      }
+    } else{
+      for (int boardRow=0; boardRow < BOARD_SIZE_IN_SQUARES; ++boardRow) {
+        if (boardRow % 2 == 0) {
+          drawRowOfSquares(out, "white", boardRow);
+        } else {
+          drawRowOfSquares(out, "black", boardRow);
+        }
+      }
     }
+    drawHeaders(out, playerColor);
   }
-
-  private static void drawRowOfSquares(PrintStream out, String playerColor) {
-
+  private static void drawRowOfSquares(PrintStream out, String playerColor, int boardRow) {
+    printRowNumberHeader(out, boardRow);
       for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
-        setRed(out);
-
           if (boardCol % 2 == 0) {
-            if (playerColor.equals("black")) {
+            if (playerColor.equalsIgnoreCase("black")) {
               drawBlackSquare(out);
             } else {
               drawWhiteSquare(out);
             }
           } else {
-            if (playerColor.equals("black")) {
+            if (playerColor.equalsIgnoreCase("black")) {
               drawWhiteSquare(out);
             } else {
               drawBlackSquare(out);
