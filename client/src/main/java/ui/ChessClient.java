@@ -4,6 +4,7 @@ import ResponseException.ResponseException;
 import server_facade.ServerFacade;
 
 import java.util.Arrays;
+import model.AuthData;
 
 public class ChessClient {
     private State state = State.PRE_LOGIN;
@@ -18,11 +19,20 @@ public class ChessClient {
     }
 
     public String help() {
-        return "Commands:\n" +
-                "  register <USERNAME> <PASSWORD> <EMAIL> - creates an account\n" +
-                "  login <USERNAME> <PASSWORD> - to play chess\n" +
-                "  help - show this message\n" +
-                "  quit - exit the program\n";
+        if (state == State.PRE_LOGIN) {
+            return "Commands:\n" +
+                    "  register <USERNAME> <PASSWORD> <EMAIL> - creates an account\n" +
+                    "  login <USERNAME> <PASSWORD> - to play chess\n" +
+                    "  help - show this message\n" +
+                    "  quit - exit the program\n";
+        } else {
+            return "Commands:\n" +
+                    "  logout - log out of the current session\n" +
+                    "  create - create a new game\n" +
+                    "  list - list available games\n" +
+                    "  join <GAME_ID> - join a game\n" +
+                    "  quit - exit the program\n";
+        }
     }
 
     public String eval(String input) {
@@ -46,19 +56,34 @@ public class ChessClient {
     }
 
     public String login(String... params) throws ClientException {
-        return null;
+        if (params.length != 2) {
+            throw new ClientException("login requires 2 parameters: <USERNAME> <PASSWORD>");
+        }
+        String username=params[0];
+        String password=params[1];
+
+        try {
+            AuthData authData = server.login(username, password);
+            state = State.POST_LOGIN;
+            System.out.print(help());
+            return String.format("Logged in as %s with authToken: %s", username, authData.authToken());
+        } catch (ResponseException e) {
+            return e.getMessage();
+        }
     }
     public String register(String... params) throws ClientException, ResponseException {
         if (params.length != 3) {
             throw new ClientException("register requires 3 parameters: <USERNAME> <PASSWORD> <EMAIL>");
         }
-        String username = params[0];
-        String password = params[1];
-        String email = params[2];
+        String username=params[0];
+        String password=params[1];
+        String email=params[2];
 
         try {
-        server.register(username, password, email);
-        return String.format("Registered as %s", username);
+            AuthData authData = server.register(username, password, email);
+            state = State.POST_LOGIN;
+            System.out.print(help());
+            return String.format("Registered as %s with authToken: %s", username, authData.authToken());
         } catch (ResponseException e) {
             return e.getMessage();
         }
@@ -79,4 +104,5 @@ public class ChessClient {
         System.exit(0);
         return "Goodbye!";
     }
+
 }

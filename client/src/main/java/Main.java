@@ -6,11 +6,6 @@ import ui.ChessBoardUi;
 import ui.Repl;
 import server.Server;
 
-import javax.xml.crypto.Data;
-import java.io.PrintStream;
-
-import static ui.EscapeSequences.*;
-import static ui.EscapeSequences.SET_TEXT_COLOR_RED;
 
 public class Main {
     private static Server server;

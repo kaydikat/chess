@@ -1,5 +1,7 @@
 package client;
 
+import ResponseException.ResponseException;
+import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 import dataaccess.authdaos.AuthDao;
 import dataaccess.authdaos.AuthDaoSQL;
@@ -12,6 +14,7 @@ import org.junit.jupiter.api.*;
 import server.Server;
 import server_facade.ServerFacade;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -49,4 +52,27 @@ public class ServerFacadeTests {
         assertTrue(authData.authToken().length() > 10);
     }
 
+    @Test
+    void registerUserAlreadyRegistered() throws Exception {
+        assertThrows(ResponseException.class, () -> {
+            facade.register("user1", "password1", "user1@email.com");
+            facade.register("user1", "password1", "user1@email.com");
+        });
+    }
+
+
+    @Test
+    void login() throws Exception {
+        AuthData authData = facade.register("user1", "password1", "user1@email.com");
+        authData = facade.login("user1", "password1");
+        assertTrue(authData.authToken().length() > 10);
+    }
+
+    @Test
+    void loginWrongPassword() throws Exception {
+        assertThrows(ResponseException.class, () -> {
+            facade.register("user1", "password1", "user1@email.com");
+            facade.login("user1", "wrongPassword");
+        });
+    }
 }

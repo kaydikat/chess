@@ -3,7 +3,9 @@ package server_facade;
 import com.google.gson.Gson;
 import ResponseException.ResponseException;
 import model.AuthData;
+import request.LoginRequest;
 import request.RegisterRequest;
+import result.LoginResult;
 import result.RegisterResult;
 
 import java.io.*;
@@ -26,6 +28,17 @@ public class ServerFacade {
 
      return new AuthData(result.authToken(), result.username());
    }
+
+  public AuthData login(String username, String password) throws ResponseException {
+    LoginRequest request = new LoginRequest(username, password);
+    LoginResult result = this.makeRequest("POST", "/session", request, LoginResult.class);
+
+    if (result.message() != null && result.message().contains("error")) {
+      throw new ResponseException(400, result.message());
+    }
+
+    return new AuthData(result.authToken(), result.username());
+  }
 
 
   private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
