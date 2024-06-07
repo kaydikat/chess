@@ -32,7 +32,7 @@ public class ChessClient {
                 case "create" -> create();
                 case "list" -> list();
                 case "join" -> join(params);
-                case "quit" -> "quit";
+                case "quit" -> quit();
                 default -> help();
             };
         } catch (ClientException ex) {
@@ -56,6 +56,9 @@ public class ChessClient {
         return null;
     }
     public String join(String... params) throws ClientException {
+        return null;
+    }
+    public String quit() {
         return null;
     }
 }
