@@ -1,13 +1,18 @@
 package ui;
 
+import ResponseException.ResponseException;
+import server_facade.ServerFacade;
+
 import java.util.Arrays;
 
 public class ChessClient {
     private State state = State.PRE_LOGIN;
+    private final ServerFacade server;
     private final String serverUrl;
     private final Repl repl;
 
     public ChessClient(String serverUrl, Repl repl) {
+        server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
         this.repl = repl;
     }
@@ -43,8 +48,20 @@ public class ChessClient {
     public String login(String... params) throws ClientException {
         return null;
     }
-    public String register(String... params) throws ClientException {
-        return null;
+    public String register(String... params) throws ClientException, ResponseException {
+        if (params.length != 3) {
+            throw new ClientException("register requires 3 parameters: <USERNAME> <PASSWORD> <EMAIL>");
+        }
+        String username = params[0];
+        String password = params[1];
+        String email = params[2];
+
+        try {
+        server.register(username, password, email);
+        return String.format("Registered as %s", username);
+        } catch (ResponseException e) {
+            return e.getMessage();
+        }
     }
     public String logout() throws ClientException {
         return null;

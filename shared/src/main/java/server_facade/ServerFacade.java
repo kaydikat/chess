@@ -3,6 +3,7 @@ package server_facade;
 import com.google.gson.Gson;
 import ResponseException.ResponseException;
 import request.RegisterRequest;
+import result.RegisterResult;
 
 import java.io.*;
 import java.net.*;
@@ -14,9 +15,10 @@ public class ServerFacade {
         this.serverUrl = serverUrl;
     }
 
-    public <T> T register(String username, String password, String email, Class<T> response) throws ResponseException {
-        return makeRequest("POST", "/register", new RegisterRequest(username, password, email), response);
-    }
+   public void register(String username, String password, String email) throws ResponseException {
+     RegisterRequest request=new RegisterRequest(username, password, email);
+     this.makeRequest("POST", "/user", request, RegisterResult.class);
+   }
 
   private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
     try {
