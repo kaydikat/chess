@@ -30,7 +30,7 @@ public class ServerFacadeTests {
 
     @Test
     void register() throws Exception {
-        AuthData authData = facade.register("player1", "password", "p1@email.com");
+        AuthData authData = facade.register("user1", "password1", "user1@email.com");
         assertTrue(authData.authToken().length() > 10);
     }
 
