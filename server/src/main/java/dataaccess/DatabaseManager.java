@@ -2,6 +2,14 @@ package dataaccess;
 
 import java.sql.*;
 import java.util.Properties;
+
+import dataaccess.authdaos.AuthDao;
+import dataaccess.authdaos.AuthDaoSQL;
+import dataaccess.gamedaos.GameDao;
+import dataaccess.gamedaos.GameDaoSQL;
+import dataaccess.userdaos.UserDao;
+import dataaccess.userdaos.UserDaoSQL;
+import service.ClearService;
 import tables.CreateTables;
 
 public class DatabaseManager {
@@ -56,6 +64,21 @@ public class DatabaseManager {
                 }
             }
 
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    public static void clearTables() throws DataAccessException {
+        try (var conn = getConnection()) {
+            for (var statement : new CreateTables().allTables()) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    for (var table : new String[] {"user", "auth", "game"}) {
+                        preparedStatement.executeUpdate("DELETE FROM " + table);
+                    }
+                    preparedStatement.executeUpdate();
+                }
+            }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }

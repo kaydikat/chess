@@ -1,5 +1,12 @@
 package client;
 
+import dataaccess.DatabaseManager;
+import dataaccess.authdaos.AuthDao;
+import dataaccess.authdaos.AuthDaoSQL;
+import dataaccess.gamedaos.GameDao;
+import dataaccess.gamedaos.GameDaoSQL;
+import dataaccess.userdaos.UserDao;
+import dataaccess.userdaos.UserDaoSQL;
 import model.AuthData;
 import org.junit.jupiter.api.*;
 import server.Server;
@@ -9,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class ServerFacadeTests {
-
     private static Server server;
     static ServerFacade facade;
 
@@ -21,6 +27,15 @@ public class ServerFacadeTests {
         System.out.println("Started test HTTP server on " + port);
         facade = new ServerFacade(serverUrl);
     }
+    @BeforeEach
+    public void clear() {
+        try {
+            DatabaseManager.clearTables();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @AfterAll
     static void stopServer() {

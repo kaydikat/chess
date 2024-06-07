@@ -76,6 +76,7 @@ public class ChessClient {
         return null;
     }
     public String quit() {
-        return null;
+        System.exit(0);
+        return "Goodbye!";
     }
 }

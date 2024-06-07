@@ -27,6 +27,7 @@ public class ServerFacade {
      return new AuthData(result.authToken(), result.username());
    }
 
+
   private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
     try {
       URL url = (new URI(serverUrl + path)).toURL();

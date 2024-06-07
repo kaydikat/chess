@@ -18,7 +18,7 @@ public class Server {
 
 
     public int run(int desiredPort) {
-        try {
+      try {
             DatabaseManager.createDatabase();
         } catch (DataAccessException e) {
             e.printStackTrace();
@@ -41,7 +41,6 @@ public class Server {
         Spark.awaitStop();
     }
     private static void createEndpoints() {
-
         Spark.delete("/db", (req, res) -> (new ClearHandler(authDao, userDao, gameDao).handleRequest(req.body())));
         Spark.post("/user", (req, res) ->
                 (new RegisterHandler(authDao, userDao)).handle(req, res));
