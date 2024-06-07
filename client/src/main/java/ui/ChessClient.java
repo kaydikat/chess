@@ -40,7 +40,7 @@ public class ChessClient {
                 case "quit" -> quit();
                 default -> help();
             };
-        } catch (ClientException ex) {
+        } catch (ClientException | ResponseException ex) {
             return ex.getMessage();
         }
     }
