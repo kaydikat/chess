@@ -1,6 +1,5 @@
 import chess.*;
 import chess.ChessPiece;
-import dataaccess.DataAccessException;
 import ui.ChessBoardUi;
 import ui.Repl;
 
