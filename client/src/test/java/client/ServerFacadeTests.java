@@ -17,9 +17,9 @@ public class ServerFacadeTests {
 
     @BeforeAll
     public static void init() {
-        var serverUrl = "http://localhost:8080";
         server = new Server();
-        var port = server.run(8080);
+        var port = server.run(0);
+        var serverUrl = "http://localhost:" + port;
         System.out.println("Started test HTTP server on " + port);
         facade = new ServerFacade(serverUrl);
     }
