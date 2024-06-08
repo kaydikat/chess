@@ -4,17 +4,13 @@ import com.google.gson.Gson;
 import ResponseException.ResponseException;
 import model.AuthData;
 import model.GameData;
-import request.CreateGameRequest;
-import request.LoginRequest;
-import request.LogoutRequest;
-import request.RegisterRequest;
-import result.CreateGameResult;
-import result.LoginResult;
-import result.LogoutResult;
-import result.RegisterResult;
+import request.*;
+import result.*;
 
 import java.io.*;
 import java.net.*;
+import java.util.Collection;
+
 public class ServerFacade {
   private final String serverUrl;
   private final Gson gson = new Gson();
@@ -64,6 +60,14 @@ public class ServerFacade {
   }
 
 
+  public Collection<GameData> list(String authToken) throws ResponseException {
+    ListGamesRequest request = new ListGamesRequest(authToken);
+    ListGamesResult result = this.makeRequest("GET", "/game", request, ListGamesResult.class, authToken);
+
+    return result.games();
+  }
+
+
   private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
     try {
       URL url = (new URI(serverUrl + path)).toURL();
@@ -75,7 +79,9 @@ public class ServerFacade {
         http.setRequestProperty("Authorization", authToken);
       }
 
-      writeBody(request, http);
+      if (!method.equalsIgnoreCase("GET")) {
+        writeBody(request, http);
+      }
       http.connect();
       throwIfNotSuccessful(http);
       return readBody(http, responseClass);

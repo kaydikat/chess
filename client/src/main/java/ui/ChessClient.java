@@ -5,6 +5,8 @@ import model.GameData;
 import server_facade.ServerFacade;
 
 import java.util.Arrays;
+import java.util.Collection;
+
 import model.AuthData;
 
 public class ChessClient {
@@ -52,6 +54,7 @@ public class ChessClient {
                 case "create" -> create(params);
                 case "list" -> list();
                 case "join" -> join(params);
+                case "observe" -> observe(params);
                 case "quit" -> quit();
                 default -> help();
             };
@@ -121,10 +124,24 @@ public class ChessClient {
             }
         }
     }
-    public String list() throws ClientException {
-        return null;
+
+    public String list() throws ClientException, ResponseException {
+        if (state == State.PRE_LOGIN) {
+            throw new ClientException("You must be logged in to list games");
+        } else {
+            Collection<GameData> games = server.list(authData.authToken());
+            StringBuilder gameListBuilder = new StringBuilder();
+            int index = 1;
+            for (GameData game : games) {
+                gameListBuilder.append(String.format("%d. %s\n", index++, game));
+            }
+            return gameListBuilder.toString();
+        }
     }
     public String join(String... params) throws ClientException {
+        return null;
+    }
+    public String observe(String... params) throws ClientException {
         return null;
     }
     public String quit() {

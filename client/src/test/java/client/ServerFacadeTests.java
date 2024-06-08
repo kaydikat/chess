@@ -46,7 +46,7 @@ public class ServerFacadeTests {
     }
 
     @Test
-    void registerUserAlreadyRegistered() throws Exception {
+    void registerUserAlreadyRegistered() {
         assertThrows(ResponseException.class, () -> {
             facade.register("user1", "password1", "user1@email.com");
             facade.register("user1", "password1", "user1@email.com");
@@ -62,7 +62,7 @@ public class ServerFacadeTests {
     }
 
     @Test
-    void loginWrongPassword() throws Exception {
+    void loginWrongPassword() {
         assertThrows(ResponseException.class, () -> {
             facade.register("user1", "password1", "user1@email.com");
             facade.login("user1", "wrongPassword");
@@ -77,7 +77,7 @@ public class ServerFacadeTests {
     }
 
     @Test
-    void logoutWithoutToken() throws Exception {
+    void logoutWithoutToken() {
         AuthData authData=new AuthData(null, "user1");
         assertThrows(ResponseException.class, () -> {
             facade.logout(authData);
@@ -88,6 +88,28 @@ public class ServerFacadeTests {
     void create() throws Exception {
         AuthData authData=facade.register("user1", "password1", "user1@email.com");
         GameData gameData=facade.create(authData.authToken(), "game1");
-        assertNotNull(gameData.gameID());
+        assertNotNull(gameData.gameName());
+    }
+
+    @Test
+    void createWithoutToken() {
+        assertThrows(ResponseException.class, () -> {
+            facade.create(null, "game1");
+        });
+    }
+
+    @Test
+    void list() throws Exception {
+        AuthData authData=facade.register("user1", "password1", "user1@email.com");
+        GameData game1=facade.create(authData.authToken(), "game1");
+        GameData game2=facade.create(authData.authToken(), "game2");
+        assertEquals(2,facade.list(authData.authToken()).size());
+    }
+
+    @Test
+    void listWithoutToken() {
+        assertThrows(ResponseException.class, () -> {
+            facade.list(null);
+        });
     }
 }
