@@ -3,9 +3,14 @@ package server_facade;
 import com.google.gson.Gson;
 import ResponseException.ResponseException;
 import model.AuthData;
+import model.GameData;
+import request.CreateGameRequest;
 import request.LoginRequest;
+import request.LogoutRequest;
 import request.RegisterRequest;
+import result.CreateGameResult;
 import result.LoginResult;
+import result.LogoutResult;
 import result.RegisterResult;
 
 import java.io.*;
@@ -20,7 +25,7 @@ public class ServerFacade {
 
    public AuthData register(String username, String password, String email) throws ResponseException {
      RegisterRequest request = new RegisterRequest(username, password, email);
-     RegisterResult result = this.makeRequest("POST", "/user", request, RegisterResult.class);
+     RegisterResult result = this.makeRequest("POST", "/user", request, RegisterResult.class, null);
 
      if (result.message() != null && result.message().contains("error")) {
        throw new ResponseException(400, result.message());
@@ -31,7 +36,7 @@ public class ServerFacade {
 
   public AuthData login(String username, String password) throws ResponseException {
     LoginRequest request = new LoginRequest(username, password);
-    LoginResult result = this.makeRequest("POST", "/session", request, LoginResult.class);
+    LoginResult result = this.makeRequest("POST", "/session", request, LoginResult.class, null);
 
     if (result.message() != null && result.message().contains("error")) {
       throw new ResponseException(400, result.message());
@@ -40,13 +45,35 @@ public class ServerFacade {
     return new AuthData(result.authToken(), result.username());
   }
 
+  public AuthData logout(AuthData authData) throws ResponseException {
+    LogoutRequest request = new LogoutRequest(authData.authToken());
+    LogoutResult result = this.makeRequest("DELETE", "/session", request, LogoutResult.class, authData.authToken());
 
-  private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    return new AuthData(null, result.message());
+  }
+
+  public GameData create(String authToken, String gameName) throws ResponseException {
+    CreateGameRequest request = new CreateGameRequest(authToken, gameName);
+    CreateGameResult result = this.makeRequest("POST", "/game", request, CreateGameResult.class, authToken);
+
+    if (result.message() != null && result.message().contains("error")) {
+      throw new ResponseException(400, result.message());
+    }
+
+    return new GameData(result.gameID(), null, null, gameName, result.game());
+  }
+
+
+  private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
     try {
       URL url = (new URI(serverUrl + path)).toURL();
       HttpURLConnection http = (HttpURLConnection) url.openConnection();
       http.setRequestMethod(method);
       http.setDoOutput(true);
+
+      if (authToken != null) {
+        http.setRequestProperty("Authorization", authToken);
+      }
 
       writeBody(request, http);
       http.connect();

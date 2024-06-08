@@ -1,21 +1,14 @@
 package client;
 
 import ResponseException.ResponseException;
-import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
-import dataaccess.authdaos.AuthDao;
-import dataaccess.authdaos.AuthDaoSQL;
-import dataaccess.gamedaos.GameDao;
-import dataaccess.gamedaos.GameDaoSQL;
-import dataaccess.userdaos.UserDao;
-import dataaccess.userdaos.UserDaoSQL;
 import model.AuthData;
+import model.GameData;
 import org.junit.jupiter.api.*;
 import server.Server;
 import server_facade.ServerFacade;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ServerFacadeTests {
@@ -74,5 +67,27 @@ public class ServerFacadeTests {
             facade.register("user1", "password1", "user1@email.com");
             facade.login("user1", "wrongPassword");
         });
+    }
+
+    @Test
+    void logout() throws Exception {
+        AuthData authData = facade.register("user1", "password1", "user1@email.com");
+        authData = facade.logout(authData);
+        assertNull(authData.authToken());
+    }
+
+    @Test
+    void logoutWithoutToken() throws Exception {
+        AuthData authData=new AuthData(null, "user1");
+        assertThrows(ResponseException.class, () -> {
+            facade.logout(authData);
+        });
+    }
+
+    @Test
+    void create() throws Exception {
+        AuthData authData=facade.register("user1", "password1", "user1@email.com");
+        GameData gameData=facade.create(authData.authToken(), "game1");
+        assertNotNull(gameData.gameID());
     }
 }

@@ -1,6 +1,7 @@
 package ui;
 
 import ResponseException.ResponseException;
+import model.GameData;
 import server_facade.ServerFacade;
 
 import java.util.Arrays;
@@ -11,6 +12,8 @@ public class ChessClient {
     private final ServerFacade server;
     private final String serverUrl;
     private final Repl repl;
+    private AuthData authData;
+    private GameData gameData;
 
     public ChessClient(String serverUrl, Repl repl) {
         server = new ServerFacade(serverUrl);
@@ -28,9 +31,11 @@ public class ChessClient {
         } else {
             return "Commands:\n" +
                     "  logout - log out of the current session\n" +
-                    "  create - create a new game\n" +
+                    "  create <NAME> - create a new game\n" +
                     "  list - list available games\n" +
-                    "  join <GAME_ID> - join a game\n" +
+                    "  join <GAME_ID> [WHITE][BLACK]- join a game\n" +
+                    "  observe <ID> - observe a game\n" +
+                    "  help - show this message\n" +
                     "  quit - exit the program\n";
         }
     }
@@ -44,7 +49,7 @@ public class ChessClient {
                 case "login" -> login(params);
                 case "register" -> register(params);
                 case "logout" -> logout();
-                case "create" -> create();
+                case "create" -> create(params);
                 case "list" -> list();
                 case "join" -> join(params);
                 case "quit" -> quit();
@@ -63,7 +68,7 @@ public class ChessClient {
         String password=params[1];
 
         try {
-            AuthData authData = server.login(username, password);
+            authData = server.login(username, password);
             state = State.POST_LOGIN;
             System.out.print(help());
             return String.format("Logged in as %s with authToken: %s", username, authData.authToken());
@@ -80,7 +85,7 @@ public class ChessClient {
         String email=params[2];
 
         try {
-            AuthData authData = server.register(username, password, email);
+            authData = server.register(username, password, email);
             state = State.POST_LOGIN;
             System.out.print(help());
             return String.format("Registered as %s with authToken: %s", username, authData.authToken());
@@ -88,11 +93,33 @@ public class ChessClient {
             return e.getMessage();
         }
     }
-    public String logout() throws ClientException {
-        return null;
+    public String logout() throws ClientException, ResponseException {
+        if (state == State.PRE_LOGIN) {
+            throw new ClientException("You must be logged in to log out");
+        } else {
+            server.logout(authData);
+            state=State.PRE_LOGIN;
+            return "Logged out";
+        }
     }
-    public String create() throws ClientException {
-        return null;
+    public String create(String... params) throws ClientException {
+        if (state == State.PRE_LOGIN) {
+            throw new ClientException("You must be logged in to create game");
+        } else {
+            if (params.length != 1) {
+                throw new ClientException("Create requires 1 parameter: <NAME>");
+            }
+            String gameName=params[0];
+
+            try {
+                gameData=server.create(authData.authToken(), gameName);
+                state=State.POST_LOGIN;
+                System.out.print(help());
+                return String.format("Created %s with gameID %d", gameName, gameData.gameID());
+            } catch (ResponseException e) {
+                return e.getMessage();
+            }
+        }
     }
     public String list() throws ClientException {
         return null;

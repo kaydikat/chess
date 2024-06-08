@@ -1,3 +1,5 @@
 package result;
 
-public record CreateGameResult(Integer gameID, String message) {}
+import chess.ChessGame;
+
+public record CreateGameResult(Integer gameID, ChessGame game, String message) {}
