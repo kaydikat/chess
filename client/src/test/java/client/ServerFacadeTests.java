@@ -127,4 +127,19 @@ public class ServerFacadeTests {
             facade.join(null, 1, "BLACK");
         });
     }
+
+    @Test
+    void observe() throws Exception{
+        AuthData authData=facade.register("user1", "password1", "user1@email.com");
+        GameData game1=facade.create(authData.authToken(), "game1");
+        GameData joinedGame=facade.join(authData.authToken(), game1.gameID(), null);
+        assertNull(joinedGame.blackUsername());
+    }
+
+    @Test
+    void observeGameWithoutToken() {
+        assertThrows(ResponseException.class, () -> {
+            facade.join(null, 1, null);
+        });
+    }
 }

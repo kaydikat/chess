@@ -6,6 +6,8 @@ import server_facade.ServerFacade;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import model.AuthData;
 
@@ -16,6 +18,7 @@ public class ChessClient {
     private final Repl repl;
     private AuthData authData;
     private GameData gameData;
+    private Map<Integer, Integer> gameMap = new HashMap<>();
 
     public ChessClient(String serverUrl, Repl repl) {
         server = new ServerFacade(serverUrl);
@@ -36,7 +39,7 @@ public class ChessClient {
                     "  create <NAME> - create a new game\n" +
                     "  list - list available games\n" +
                     "  join <GAME_ID> [WHITE][BLACK]- join a game\n" +
-                    "  observe <ID> - observe a game\n" +
+                    "  observe <GAME_ID> - observe a game\n" +
                     "  help - show this message\n" +
                     "  quit - exit the program\n";
         }
@@ -102,6 +105,7 @@ public class ChessClient {
         } else {
             server.logout(authData);
             state=State.PRE_LOGIN;
+            System.out.print(help());
             return "Logged out";
         }
     }
@@ -117,7 +121,6 @@ public class ChessClient {
             try {
                 gameData=server.create(authData.authToken(), gameName);
                 state=State.POST_LOGIN;
-                System.out.print(help());
                 return String.format("Created %s with gameID %d", gameName, gameData.gameID());
             } catch (ResponseException e) {
                 return e.getMessage();
@@ -131,9 +134,12 @@ public class ChessClient {
         } else {
             Collection<GameData> games = server.list(authData.authToken());
             StringBuilder gameListBuilder = new StringBuilder();
+            gameMap.clear();
             int index = 1;
             for (GameData game : games) {
-                gameListBuilder.append(String.format("%d. %s\n", index++, game));
+                gameListBuilder.append(String.format("%d. %s\n", index, game));
+                gameMap.put(index, game.gameID()); // Store the mapping
+                index++;
             }
             return gameListBuilder.toString();
         }
@@ -143,14 +149,15 @@ public class ChessClient {
             throw new ClientException("You must be logged in to join game");
         } else {
             if (params.length != 2) {
-                throw new ClientException("Create requires 2 parameter: <GAMEID> <COLOR>");
+                throw new ClientException("Create requires 2 parameters: <GAMEID> <COLOR>");
             }
-            Integer gameID = Integer.valueOf(params[0]);
-            String color=params[1];
+            Integer gameNumber = Integer.valueOf(params[0]);
+            String color = params[1];
+
+            Integer gameID = gameMap.get(gameNumber);
 
             try {
                 gameData=server.join(authData.authToken(), gameID, color);
-                System.out.print(help());
                 return String.format("Joined %s as %s", gameData.gameName(), color);
             } catch (ResponseException e) {
                 return e.getMessage();
@@ -158,11 +165,29 @@ public class ChessClient {
         }
     }
     public String observe(String... params) throws ClientException {
-        return null;
+        if (state == State.PRE_LOGIN) {
+            throw new ClientException("You must be logged in to observe game");
+        } else {
+            if (params.length != 1) {
+                throw new ClientException("Observe requires 1 parameter: <GAME_NUMBER>");
+            }
+            Integer gameNumber = Integer.valueOf(params[0]);
+
+            Integer gameID = gameMap.get(gameNumber);
+            if (gameID == null) {
+                throw new ClientException("Invalid game number");
+            }
+
+            try {
+                gameData = server.join(authData.authToken(), gameID, null);
+                return String.format("Observing %s", gameData.gameName());
+            } catch (ResponseException e) {
+                return e.getMessage();
+            }
+        }
     }
     public String quit() {
         System.exit(0);
         return "Goodbye!";
     }
-
 }
