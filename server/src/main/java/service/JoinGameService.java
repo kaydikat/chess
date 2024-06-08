@@ -24,7 +24,7 @@ public class JoinGameService {
       return new JoinGameResult(null, null, null, null,"error: invalid auth token");
     }
 
-    if (!"black".equalsIgnoreCase(request.playerColor()) && !"white".equalsIgnoreCase(request.playerColor()) && request.playerColor() != null) {
+    if (!"black".equalsIgnoreCase(request.playerColor()) && !"white".equalsIgnoreCase(request.playerColor())) {
       return new JoinGameResult(null, null, null, null,"error: invalid player color");
     }
 

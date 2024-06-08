@@ -165,26 +165,7 @@ public class ChessClient {
         }
     }
     public String observe(String... params) throws ClientException {
-        if (state == State.PRE_LOGIN) {
-            throw new ClientException("You must be logged in to observe game");
-        } else {
-            if (params.length != 1) {
-                throw new ClientException("Observe requires 1 parameter: <GAME_NUMBER>");
-            }
-            Integer gameNumber = Integer.valueOf(params[0]);
-
-            Integer gameID = gameMap.get(gameNumber);
-            if (gameID == null) {
-                throw new ClientException("Invalid game number");
-            }
-
-            try {
-                gameData = server.join(authData.authToken(), gameID, null);
-                return String.format("Observing %s", gameData.gameName());
-            } catch (ResponseException e) {
-                return e.getMessage();
-            }
-        }
+        return null;
     }
     public String quit() {
         System.exit(0);
