@@ -22,16 +22,6 @@ public class ChessBoardUi {
     drawHeaders(out, playerColor);
   }
 
-//  public static void main(String[] args) {
-//    var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-//
-//    out.print(ERASE_SCREEN);
-//
-//    drawHeaders(out, "white");
-//    drawChessBoard(out, "white");
-//    drawHeaders(out, "white");
-//
-//  }
 
   private static void drawHeaders(PrintStream out, String player) {
     setBlack(out);

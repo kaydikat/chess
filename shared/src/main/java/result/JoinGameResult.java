@@ -1,3 +1,6 @@
 package result;
 
-public record JoinGameResult(String message) {}
+import chess.ChessGame;
+
+public record JoinGameResult(String whiteUsername, String blackUsername,
+                             String gameName, ChessGame game, String message) {}

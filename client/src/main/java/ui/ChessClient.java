@@ -139,7 +139,23 @@ public class ChessClient {
         }
     }
     public String join(String... params) throws ClientException {
-        return null;
+        if (state == State.PRE_LOGIN) {
+            throw new ClientException("You must be logged in to join game");
+        } else {
+            if (params.length != 2) {
+                throw new ClientException("Create requires 2 parameter: <GAMEID> <COLOR>");
+            }
+            Integer gameID = Integer.valueOf(params[0]);
+            String color=params[1];
+
+            try {
+                gameData=server.join(authData.authToken(), gameID, color);
+                System.out.print(help());
+                return String.format("Joined %s as %s", gameData.gameName(), color);
+            } catch (ResponseException e) {
+                return e.getMessage();
+            }
+        }
     }
     public String observe(String... params) throws ClientException {
         return null;

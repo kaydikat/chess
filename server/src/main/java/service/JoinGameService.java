@@ -21,11 +21,11 @@ public class JoinGameService {
   public JoinGameResult joinGame(JoinGameRequest request) {
     String username = returnAuth(request.authToken());
     if (username == null) {
-      return new JoinGameResult("error: invalid auth token");
+      return new JoinGameResult(null, null, null, null,"error: invalid auth token");
     }
 
     if (!"black".equalsIgnoreCase(request.playerColor()) && !"white".equalsIgnoreCase(request.playerColor())) {
-      return new JoinGameResult("error: invalid player color");
+      return new JoinGameResult(null, null, null, null,"error: invalid player color");
     }
 
     try {
@@ -37,12 +37,13 @@ public class JoinGameService {
         // Handle joining as an observer
         System.out.println("Player " + username + " has joined game " + request.gameID() + " as an observer");
       }
-      return new JoinGameResult(null);
+      game = gameDao.getGame(request.gameID());
+      return new JoinGameResult(game.whiteUsername(), game.blackUsername(), game.gameName(), game.game(), null);
     } catch (DataAccessException e) {
       if (e.getMessage().equals("Color already exists")) {
-        return new JoinGameResult("error: color already exists");
+        return new JoinGameResult(null, null, null,null,"error: color already exists");
       }
-      return new JoinGameResult("error: bad game ID");
+      return new JoinGameResult(null,null,null,null,"error: bad game ID");
     }
   }
 }

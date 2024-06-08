@@ -17,7 +17,7 @@ public class Main {
         if (args.length == 1) {
             serverUrl = args[0];
         }
-        ChessBoardUi.drawBoard(System.out, "black");
+        ChessBoardUi.drawBoard(System.out, "white");
         new Repl(serverUrl).run();
         var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         System.out.println("♕ 240 Chess Client: " + piece);

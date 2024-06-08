@@ -66,6 +66,13 @@ public class ServerFacade {
 
     return result.games();
   }
+  public GameData join(String authToken, Integer gameID, String color) throws ResponseException {
+    JoinGameRequest request = new JoinGameRequest(authToken, color, gameID);
+    JoinGameResult result = this.makeRequest("PUT", "/game", request, JoinGameResult.class, authToken);
+
+
+    return new GameData(gameID, result.whiteUsername(), result.blackUsername(), result.gameName(), result.game());
+  }
 
 
   private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
