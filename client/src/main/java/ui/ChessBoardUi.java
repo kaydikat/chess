@@ -10,7 +10,7 @@ import chess.ChessPosition;
 import static ui.EscapeSequences.*;
 
 public class ChessBoardUi {
-  private static final ChessBoard chessBoard = new ChessBoard();
+  private static final ChessBoard CHESS_BOARD = new ChessBoard();
   private static final int BOARD_SIZE_IN_SQUARES = 8;
   private static final int SQUARE_SIZE_IN_CHARS = 3;
 
@@ -21,7 +21,6 @@ public class ChessBoardUi {
     drawChessBoard(out, playerColor);
     drawHeaders(out, playerColor);
   }
-
 
   private static void drawHeaders(PrintStream out, String player) {
     setBlack(out);
@@ -64,10 +63,10 @@ public class ChessBoardUi {
   }
 
   private static void drawChessBoard(PrintStream out, String playerColor) {
-    chessBoard.resetBoard();
-      for (int boardRow = 0; boardRow < BOARD_SIZE_IN_SQUARES; ++boardRow) {
-        drawTwoRows(out, boardRow, playerColor);
-      }
+    CHESS_BOARD.resetBoard();
+    for (int boardRow = 0; boardRow < BOARD_SIZE_IN_SQUARES; ++boardRow) {
+      drawTwoRows(out, boardRow, playerColor);
+    }
   }
 
   private static void drawTwoRows(PrintStream out, int boardRow, String playerColor) {
@@ -105,7 +104,7 @@ public class ChessBoardUi {
   }
 
   private static void drawSquare(PrintStream out, int boardRow, int boardCol, boolean isBlack, String viewingColor) {
-    ChessPiece piece = chessBoard.getPiece(new ChessPosition(boardRow, boardCol));
+    ChessPiece piece = CHESS_BOARD.getPiece(new ChessPosition(boardRow, boardCol));
     if (isBlack) {
       out.print(SET_BG_COLOR_BLACK);
     } else {

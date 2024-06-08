@@ -1,12 +1,12 @@
 package client;
 
-import ResponseException.ResponseException;
+import responseexception.ResponseException;
 import dataaccess.DatabaseManager;
 import model.AuthData;
 import model.GameData;
 import org.junit.jupiter.api.*;
 import server.Server;
-import server_facade.ServerFacade;
+import serverfacade.ServerFacade;
 
 import static org.junit.jupiter.api.Assertions.*;
 

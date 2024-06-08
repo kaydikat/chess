@@ -1,4 +1,4 @@
-package ResponseException;
+package responseexception;
 
 public class ResponseException extends Exception{
     private final int status;

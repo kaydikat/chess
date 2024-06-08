@@ -1,8 +1,8 @@
 package ui;
 
-import ResponseException.ResponseException;
+import responseexception.ResponseException;
 import model.GameData;
-import server_facade.ServerFacade;
+import serverfacade.ServerFacade;
 
 import java.util.Arrays;
 import java.util.Collection;

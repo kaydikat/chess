@@ -1,7 +1,7 @@
-package server_facade;
+package serverfacade;
 
 import com.google.gson.Gson;
-import ResponseException.ResponseException;
+import responseexception.ResponseException;
 import model.AuthData;
 import model.GameData;
 import request.*;
