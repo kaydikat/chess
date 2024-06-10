@@ -12,6 +12,7 @@ import java.util.Collection;
 public class ChessGame {
     private TeamColor teamTurn;
     private ChessBoard chessBoard;
+    private final boolean[][] legalMoves=new boolean[8][8];
 
     public ChessGame() {
         this.teamTurn = TeamColor.WHITE;
@@ -90,7 +91,13 @@ public class ChessGame {
             }
         }
 
+        for (ChessMove move : validMoves) {
+            legalMoves[move.getEndPosition().getRow()-1][move.getEndPosition().getColumn()-1]=true;
+        }
         return validMoves;
+    }
+    public static boolean[][] getLegalMoves(){
+        return legalMoves;
     }
     /**
      * Makes a move in a chess game

@@ -1,6 +1,5 @@
 import chess.*;
 import chess.ChessPiece;
-import ui.ChessBoardUi;
 import ui.Repl;
 
 

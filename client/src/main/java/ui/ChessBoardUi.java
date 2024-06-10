@@ -10,6 +10,7 @@ import static ui.EscapeSequences.*;
 
 public class ChessBoardUi {
   private static ChessBoard CHESS_BOARD;
+  private static final boolean[][] legalMoves = ChessGame.getLegalMoves();
   private static final int BOARD_SIZE_IN_SQUARES = 8;
   private static final int SQUARE_SIZE_IN_CHARS = 3;
 
