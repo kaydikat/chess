@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessBoard;
 import responseexception.ResponseException;
 import model.GameData;
 import serverfacade.ServerFacade;
@@ -120,6 +121,8 @@ public class ChessClient {
 
             try {
                 gameData=server.create(authData.authToken(), gameName);
+                ChessBoard board = gameData.game().getBoard();
+                new ChessBoardUi(board);
                 state=State.POST_LOGIN;
                 return String.format("Created %s with gameID %d", gameName, gameData.gameID());
             } catch (ResponseException e) {
@@ -137,8 +140,9 @@ public class ChessClient {
             gameMap.clear();
             int index = 1;
             for (GameData game : games) {
-                gameListBuilder.append(String.format("%d. %s\n", index, game));
-                gameMap.put(index, game.gameID()); // Store the mapping
+                gameListBuilder.append(String.format("%d. %s: white = %s, black = %s\n",
+                        index, game.gameName(), game.whiteUsername(), game.blackUsername()));
+                gameMap.put(index, game.gameID());
                 index++;
             }
             return gameListBuilder.toString();
@@ -158,6 +162,11 @@ public class ChessClient {
 
             try {
                 gameData=server.join(authData.authToken(), gameID, color);
+                if (color.equals("white")) {
+                    ChessBoardUi.drawBoard(System.out, "WHITE");
+                } else {
+                    ChessBoardUi.drawBoard(System.out, "BLACK");
+                }
                 return String.format("Joined %s as %s", gameData.gameName(), color);
             } catch (ResponseException e) {
                 return e.getMessage();
