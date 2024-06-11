@@ -6,7 +6,6 @@ import model.AuthData;
 import model.GameData;
 import org.junit.jupiter.api.*;
 import server.Server;
-import serverfacade.ServerFacade;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,7 +15,7 @@ public class ServerFacadeTests {
     static ServerFacade facade;
 
     @BeforeAll
-    public static void init() {
+    public static void init() throws Exception {
         server = new Server();
         var port = server.run(0);
         var serverUrl = "http://localhost:" + port;

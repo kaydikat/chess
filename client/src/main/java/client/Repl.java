@@ -1,6 +1,8 @@
-package ui;
+package client;
 //import client.websocket.NotificationHandler;
 //import webSocketMessages.Notification;
+
+import client.ChessClient;
 
 import java.util.Scanner;
 

@@ -41,6 +41,7 @@ public class Server {
         Spark.awaitStop();
     }
     private static void createEndpoints() {
+        //Spark.webSocket("/connect", WSServer.class);
         Spark.delete("/db", (req, res) -> (new ClearHandler(authDao, userDao, gameDao).handleRequest(req.body())));
         Spark.post("/user", (req, res) ->
                 (new RegisterHandler(authDao, userDao)).handle(req, res));

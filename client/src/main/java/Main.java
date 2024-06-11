@@ -1,6 +1,6 @@
 import chess.*;
 import chess.ChessPiece;
-import ui.Repl;
+import client.Repl;
 
 
 public class Main {
