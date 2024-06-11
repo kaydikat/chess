@@ -74,4 +74,8 @@ public class ServerFacade {
 
     return new GameData(gameID, result.whiteUsername(), result.blackUsername(), result.gameName(), result.game());
   }
+
+  public void testWebSocket() throws Exception {
+    webSocketCommunicator.send("Test message");
+  }
 }

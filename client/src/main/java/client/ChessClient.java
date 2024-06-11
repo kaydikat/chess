@@ -21,7 +21,7 @@ public class ChessClient {
     private GameData gameData;
     private Map<Integer, Integer> gameMap = new HashMap<>();
 
-    public ChessClient(String serverUrl, Repl repl) {
+    public ChessClient(String serverUrl, Repl repl) throws Exception {
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
         this.repl = repl;
@@ -33,6 +33,7 @@ public class ChessClient {
                     "  register <USERNAME> <PASSWORD> <EMAIL> - creates an account\n" +
                     "  login <USERNAME> <PASSWORD> - to play chess\n" +
                     "  help - show this message\n" +
+                    "  testws - test the WebSocket connection\n" +
                     "  quit - exit the program\n";
         } else {
             return "Commands:\n" +
@@ -59,6 +60,7 @@ public class ChessClient {
                 case "list" -> list();
                 case "join" -> join(params);
                 case "observe" -> observe(params);
+                case "testws" -> testWebSocket();
                 case "quit" -> quit();
                 default -> help();
             };
@@ -179,5 +181,14 @@ public class ChessClient {
     public String quit() {
         System.exit(0);
         return "Goodbye!";
+    }
+
+    public String testWebSocket() {
+        try {
+            server.testWebSocket();
+            return "WebSocket connection test passed!";
+        } catch (Exception e) {
+            return "WebSocket connection test failed: " + e.getMessage();
+        }
     }
 }

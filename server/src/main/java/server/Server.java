@@ -9,6 +9,7 @@ import dataaccess.userdaos.UserDao;
 import dataaccess.userdaos.UserDaoSQL;
 import handlers.*;
 import spark.*;
+import websocket.WebSocketHandler;
 
 public class Server {
 
@@ -41,7 +42,7 @@ public class Server {
         Spark.awaitStop();
     }
     private static void createEndpoints() {
-        //Spark.webSocket("/connect", WSServer.class);
+        Spark.webSocket("/ws", WebSocketHandler.class);
         Spark.delete("/db", (req, res) -> (new ClearHandler(authDao, userDao, gameDao).handleRequest(req.body())));
         Spark.post("/user", (req, res) ->
                 (new RegisterHandler(authDao, userDao)).handle(req, res));
