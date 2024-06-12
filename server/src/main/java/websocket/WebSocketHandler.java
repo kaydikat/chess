@@ -1,11 +1,11 @@
 package websocket;
 
-import javax.websocket.*;
-
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import websocket.commands.UserGameCommand;
+import websocket.messages.ServerMessage;
 
 import org.eclipse.jetty.websocket.api.Session;
 

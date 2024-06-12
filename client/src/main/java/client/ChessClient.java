@@ -35,7 +35,7 @@ public class ChessClient {
                     "  help - show this message\n" +
                     "  testws - test the WebSocket connection\n" +
                     "  quit - exit the program\n";
-        } else {
+        } if (state == State.POST_LOGIN) {
             return "Commands:\n" +
                     "  logout - log out of the current session\n" +
                     "  create <NAME> - create a new game\n" +
@@ -44,6 +44,14 @@ public class ChessClient {
                     "  observe <GAME_ID> - observe a game\n" +
                     "  help - show this message\n" +
                     "  quit - exit the program\n";
+        } else {
+            return "Commands:\n" +
+                    "  redraw - redraws the chess board\n" +
+                    "  move <start> <end> - make a move\n" +
+                    "  highlight <start> - highlight legal moves\n" +
+                    "  resign - forfeit the game\n" +
+                    "  leave - remove yourself from the game\n" +
+                    "  help - show this message\n";
         }
     }
 
@@ -62,12 +70,18 @@ public class ChessClient {
                 case "observe" -> observe(params);
                 case "testws" -> testWebSocket();
                 case "quit" -> quit();
+                case "redraw" -> redraw();
+                case "make move" -> makeMove(params);
+                case "highlight" -> highlight(params);
+                case "resign" -> resign();
+                case "leave" -> leave();
                 default -> help();
             };
         } catch (ClientException | ResponseException ex) {
             return ex.getMessage();
         }
     }
+
 
     public String login(String... params) throws ClientException {
         if (params.length != 2) {
@@ -169,6 +183,7 @@ public class ChessClient {
                 } else {
                     ChessBoardUi.drawBoard(System.out, "BLACK");
                 }
+                state=State.GAME_STATE;
                 return String.format("Joined %s as %s", gameData.gameName(), color);
             } catch (ResponseException e) {
                 return e.getMessage();
@@ -181,6 +196,22 @@ public class ChessClient {
     public String quit() {
         System.exit(0);
         return "Goodbye!";
+    }
+
+    public String redraw() {
+        return null;
+    }
+    public String makeMove(String... params) {
+        return null;
+    }
+    public String highlight(String... params) {
+        return null;
+    }
+    public String resign() {
+        return null;
+    }
+    public String leave() {
+        return null;
     }
 
     public String testWebSocket() {
