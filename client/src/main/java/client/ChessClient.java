@@ -3,28 +3,27 @@ package client;
 import chess.ChessBoard;
 import responseexception.ResponseException;
 import model.GameData;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import model.AuthData;
 import ui.ChessBoardUi;
+import websocket.ServerMessageObserver;
 
 public class ChessClient {
     private State state = State.PRE_LOGIN;
     private final ServerFacade server;
     private final String serverUrl;
-    private final Repl repl;
     private AuthData authData;
     private GameData gameData;
     private Map<Integer, Integer> gameMap = new HashMap<>();
+    private final ServerMessageObserver observer;
 
-    public ChessClient(String serverUrl, Repl repl) throws Exception {
-        server = new ServerFacade(serverUrl);
+    public ChessClient(String serverUrl, ServerMessageObserver observer) throws Exception {
+        server = new ServerFacade(serverUrl, observer);
         this.serverUrl = serverUrl;
-        this.repl = repl;
+        this.observer = observer;
     }
 
     public String help() {
@@ -178,6 +177,7 @@ public class ChessClient {
 
             try {
                 gameData=server.join(authData.authToken(), gameID, color);
+                server.joinGame(authData.authToken(), gameID, color);
                 if (color.equals("white")) {
                     ChessBoardUi.drawBoard(System.out, "WHITE");
                 } else {

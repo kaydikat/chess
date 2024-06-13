@@ -1,22 +1,27 @@
 package client;
 
+import com.google.gson.Gson;
 import responseexception.ResponseException;
 import model.AuthData;
 import model.GameData;
 import request.*;
 import result.*;
 import http.HttpCommunicator;
+import websocket.ServerMessageObserver;
 import websocket.WebSocketCommunicator;
+import websocket.commands.UserGameCommand;
 
 import java.util.Collection;
 
 public class ServerFacade {
   private final HttpCommunicator httpCommunicator;
   private final WebSocketCommunicator webSocketCommunicator;
+  private final ServerMessageObserver observer;
 
-  public ServerFacade(String serverUrl) throws Exception {
+  public ServerFacade(String serverUrl, ServerMessageObserver observer) throws Exception {
     this.httpCommunicator=new HttpCommunicator(serverUrl);
-    this.webSocketCommunicator=new WebSocketCommunicator(serverUrl);
+    this.webSocketCommunicator=new WebSocketCommunicator(serverUrl, observer);
+    this.observer=observer;
   }
 
   public AuthData register(String username, String password, String email) throws ResponseException {
@@ -73,6 +78,15 @@ public class ServerFacade {
 
 
     return new GameData(gameID, result.whiteUsername(), result.blackUsername(), result.gameName(), result.game());
+  }
+  public void joinGame(String authToken, Integer gameID, String color) throws ResponseException {
+    try {
+      UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
+      String message = new Gson().toJson(command);
+      webSocketCommunicator.send(message);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public void testWebSocket() throws Exception {
