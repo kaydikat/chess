@@ -43,7 +43,7 @@ public class GameDaoInMemory extends AbstractGameDao {
     } else if (game.blackUsername().equals(username)) {
       return "black";
     } else {
-      return null;
+      return "observer";
     }
   }
 

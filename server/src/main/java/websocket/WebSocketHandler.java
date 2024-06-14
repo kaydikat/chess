@@ -90,7 +90,7 @@ public class WebSocketHandler {
   }
 
   private void notify(String username, String color, ConnectCommand command) {
-    if (color == null) {
+    if (color.equalsIgnoreCase("observer")) {
       color = "observer";
     }
     String message = String.format("User " + username +

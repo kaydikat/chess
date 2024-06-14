@@ -110,12 +110,16 @@ public class GameDaoSQL extends AbstractGameDao {
         preparedStatement.setInt(1, gameID);
         try (var rs = preparedStatement.executeQuery()) {
           if (rs.next()) {
-            String whiteUsername = rs.getString("whiteUsername");
-            String blackUsername = rs.getString("blackUsername");
-            if (whiteUsername.equals(username)) {
+            String whiteUsername=rs.getString("whiteUsername");
+            String blackUsername=rs.getString("blackUsername");
+            if (whiteUsername == null && blackUsername == null) {
+              return "observer";
+            } else if (whiteUsername.equals(username)) {
               return "white";
             } else if (blackUsername.equals(username)) {
               return "black";
+            } else {
+              return "observer";
             }
           }
         }
