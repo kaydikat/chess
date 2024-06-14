@@ -70,6 +70,23 @@ public class AuthDaoSQL implements AuthDao {
     return null;
   }
 
+  public String getUsername(String authToken) throws DataAccessException {
+    try (var conn = DatabaseManager.getConnection()) {
+      var statement = "SELECT username FROM auth WHERE authToken=?";
+      try (var preparedStatement = conn.prepareStatement(statement)) {
+        preparedStatement.setString(1, authToken);
+        try (var rs = preparedStatement.executeQuery()) {
+          if (rs.next()) {
+            return rs.getString("username");
+          }
+        }
+      }
+    } catch (Exception e) {
+      throw new DataAccessException("Unable to read data: " + e.getMessage());
+    }
+    return null;
+  }
+
   public void deleteAuth(String authToken) throws DataAccessException {
     try (var conn = DatabaseManager.getConnection()) {
       var statement = "DELETE FROM auth WHERE authToken=?";

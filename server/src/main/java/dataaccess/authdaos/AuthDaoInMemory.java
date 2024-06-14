@@ -44,6 +44,13 @@ public class AuthDaoInMemory implements AuthDao {
         }
         return auth;
     }
+    public String getUsername(String authToken) throws DataAccessException {
+        AuthData auth = auths.get(authToken);
+        if (auth == null) {
+        throw new DataAccessException("Auth not found");
+        }
+        return auth.username();
+    }
   public void deleteAuth(String authToken) throws DataAccessException {
     AuthData auth = auths.get(authToken);
     if (auth == null) {

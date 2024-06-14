@@ -103,6 +103,30 @@ public class GameDaoSQL extends AbstractGameDao {
   }
 
   @Override
+  public String getPlayerColor(Integer gameID, String username) throws DataAccessException {
+    try (var conn = DatabaseManager.getConnection()) {
+      var statement = "SELECT whiteUsername, blackUsername FROM game WHERE gameID=?";
+      try (var preparedStatement = conn.prepareStatement(statement)) {
+        preparedStatement.setInt(1, gameID);
+        try (var rs = preparedStatement.executeQuery()) {
+          if (rs.next()) {
+            String whiteUsername = rs.getString("whiteUsername");
+            String blackUsername = rs.getString("blackUsername");
+            if (whiteUsername.equals(username)) {
+              return "white";
+            } else if (blackUsername.equals(username)) {
+              return "black";
+            }
+          }
+        }
+      }
+    } catch (SQLException e) {
+      throw new DataAccessException("Error getting player color: " + e.getMessage());
+    }
+    return null;
+  }
+
+  @Override
   public void clear() {
     try (var conn = DatabaseManager.getConnection()) {
       var statement = "DELETE FROM game";

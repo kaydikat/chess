@@ -1,5 +1,7 @@
 package websocket.commands;
 
+import model.UserData;
+
 public class ConnectCommand extends UserGameCommand {
   private final String username;
 
