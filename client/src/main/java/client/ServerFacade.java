@@ -17,6 +17,7 @@ public class ServerFacade {
   private final HttpCommunicator httpCommunicator;
   private final WebSocketCommunicator webSocketCommunicator;
   private final ServerMessageObserver observer;
+  private final Gson gson = new Gson();
 
   public ServerFacade(String serverUrl, ServerMessageObserver observer) throws Exception {
     this.httpCommunicator=new HttpCommunicator(serverUrl);
@@ -90,6 +91,6 @@ public class ServerFacade {
   }
 
   public void testWebSocket() throws Exception {
-    webSocketCommunicator.send("Test message");
+    webSocketCommunicator.send(gson.toJson("Test message"));
   }
 }

@@ -1,5 +1,6 @@
 package websocket;
 
+import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.messages.ServerMessage;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 public class SessionManager {
   private final ConcurrentHashMap<Integer, Set<Session>> gameSessions = new ConcurrentHashMap<>();
+  private final Gson gson = new Gson();
 
   public void add(Integer gameID, Session session) {
     Set<Session> sessions = gameSessions.get(gameID);
@@ -34,7 +36,7 @@ public class SessionManager {
     if (sessions != null) {
       for (Session session : sessions) {
         if (session.isOpen()) {
-          session.getRemote().sendString(message.toString());
+          session.getRemote().sendString(gson.toJson(message));
         }
       }
     }

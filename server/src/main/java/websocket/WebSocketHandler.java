@@ -1,11 +1,13 @@
 package websocket;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dataaccess.DataAccessException;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import websocket.commands.CommandDeserializer;
 import websocket.commands.ConnectCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
@@ -16,18 +18,18 @@ import org.eclipse.jetty.websocket.api.Session;
 @WebSocket
 public class WebSocketHandler {
   private final SessionManager sessions = new SessionManager();
-  protected final Gson gson = new Gson();
+  protected final Gson gson;
 
-  @OnWebSocketConnect
-  public void onConnect(Session session) throws Exception {
-    System.out.println("Connected: " + session.getRemoteAddress().getAddress());
-    ServerMessage message = new NotificationMessage("Welcome to WebSock server");
-    session.getRemote().sendString(gson.toJson(message));
+  public WebSocketHandler() {
+    GsonBuilder builder = new GsonBuilder();
+    builder.registerTypeAdapter(UserGameCommand.class, new CommandDeserializer());
+    this.gson = builder.create();
   }
 
   @OnWebSocketMessage
   public void onMessage(Session session, String msg) throws Exception {
     UserGameCommand command = gson.fromJson(msg, UserGameCommand.class);
+    gson.fromJson(msg, ConnectCommand.class);
 
     String username = getUsername(command.getAuthString());
 
@@ -39,20 +41,15 @@ public class WebSocketHandler {
     }
   }
 
-  @OnWebSocketClose
-  public void onClose(Session session, int statusCode, String reason) {
-    System.out.println("Connection closed: " + reason);
-  }
-
   private void connect(Session session, String username, ConnectCommand command) throws DataAccessException {
     sessions.add(command.getGameID(), session);
     String message = String.format("User " + username + " connected to game " + command.getGameID());
-    ServerMessage serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+    ServerMessage serverMessage = new NotificationMessage(message);
     broadcast(command.getGameID(), serverMessage);
   }
 
   private String getUsername(String authToken) {
-    return null; // Implement logic to get username from authToken
+    return "username";
   }
   private void broadcast(Integer gameID, ServerMessage message) {
     try {

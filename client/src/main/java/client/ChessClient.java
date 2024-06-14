@@ -184,6 +184,7 @@ public class ChessClient {
                     ChessBoardUi.drawBoard(System.out, "BLACK");
                 }
                 state=State.GAME_STATE;
+                help();
                 return String.format("Joined %s as %s", gameData.gameName(), color);
             } catch (ResponseException e) {
                 return e.getMessage();

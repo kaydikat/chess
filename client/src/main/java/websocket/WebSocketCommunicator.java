@@ -1,19 +1,19 @@
 package websocket;
 
 import javax.websocket.*;
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import responseexception.ResponseException;
+import websocket.messages.ErrorMessage;
 import websocket.messages.ServerMessage;
-import websocket.ServerMessageObserver;
+import websocket.messages.ServerMessageDeserializer;
 
 public class WebSocketCommunicator extends Endpoint {
   private Session session;
   private final ServerMessageObserver observer;
-  private final Gson gson = new Gson();
+  private final Gson gson;
 
   public WebSocketCommunicator(String serverUrl, ServerMessageObserver observer) throws Exception {
     this.observer = observer;
@@ -21,10 +21,14 @@ public class WebSocketCommunicator extends Endpoint {
     URI uri = new URI(serverUrl + "/ws");
     WebSocketContainer container = ContainerProvider.getWebSocketContainer();
     this.session = container.connectToServer(this, uri);
+    GsonBuilder builder = new GsonBuilder();
+    builder.registerTypeAdapter(ServerMessage.class, new ServerMessageDeserializer());
+    this.gson = builder.create();
 
     this.session.addMessageHandler(new MessageHandler.Whole<String>() {
       @Override
       public void onMessage(String message) {
+        System.out.println("Received message: " + message);
         try {
           ServerMessage serverMessage =
                   gson.fromJson(message, ServerMessage.class);
@@ -37,15 +41,7 @@ public class WebSocketCommunicator extends Endpoint {
   }
 
   @OnOpen
-  public void onOpen(Session session, EndpointConfig endpointConfig) {
-    this.session = session;
-    System.out.println("Connected to WebSocket server");
-  }
-
-  @OnClose
-  public void onClose(Session session, CloseReason closeReason) {
-    System.out.println("WebSocket connection closed: " + closeReason.getReasonPhrase());
-  }
+  public void onOpen(Session session, EndpointConfig endpointConfig) {}
 
   public void send(String msg) throws Exception {
     this.session.getBasicRemote().sendText(msg);

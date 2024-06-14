@@ -1,17 +1,23 @@
 package client;
 
 import java.util.Scanner;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import websocket.ServerMessageObserver;
-import websocket.messages.NotificationMessage;
-import websocket.messages.ServerMessage;
+import websocket.messages.*;
 
 import static ui.EscapeSequences.*;
 
 public class Repl implements ServerMessageObserver {
+  private Gson gson;
   private final ChessClient client;
 
   public Repl(String serverUrl) throws Exception {
     client = new ChessClient(serverUrl, this);
+    GsonBuilder builder = new GsonBuilder();
+    builder.registerTypeAdapter(ServerMessage.class, new ServerMessageDeserializer());
+    this.gson = builder.create();
   }
 
   public void run() {
@@ -40,13 +46,19 @@ public class Repl implements ServerMessageObserver {
   public void notify(ServerMessage message) {
     switch (message.getServerMessageType()) {
       case NOTIFICATION -> displayNotification(((NotificationMessage) message).getMessage());
-//      case ERROR -> displayError(((ErrorMessage) message).getErrorMessage());
-//      case LOAD_GAME -> loadGame(((LoadGameMessage) message).getGame());
+      case ERROR -> displayError(((ErrorMessage) message).getErrorMessage());
+      case LOAD_GAME -> loadGame(((LoadGameMessage) message).getGame());
     }
   }
 
     private void displayNotification(String message) {
         System.out.println(SET_TEXT_COLOR_BLUE + message);
+    }
+    private void displayError(String message) {
+        System.out.println(SET_TEXT_COLOR_RED + message);
+    }
+    private void loadGame(String game) {
+        System.out.println(SET_TEXT_COLOR_GREEN + game);
     }
 
 
