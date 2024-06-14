@@ -24,13 +24,15 @@ public class JoinGameService {
       return new JoinGameResult(null, null, null, null,"error: invalid auth token");
     }
 
-    if (!"black".equalsIgnoreCase(request.playerColor()) && !"white".equalsIgnoreCase(request.playerColor())) {
+    if (!"black".equalsIgnoreCase(request.playerColor()) &&
+            !"white".equalsIgnoreCase(request.playerColor()) &&
+            !"observer".equalsIgnoreCase(request.playerColor())) {
       return new JoinGameResult(null, null, null, null,"error: invalid player color");
     }
 
     try {
       GameData game = gameDao.getGame(request.gameID());
-      if (request.playerColor() != null) {
+      if (!request.playerColor().equalsIgnoreCase("observer")) {
         gameDao.addColor(request.gameID(), request.playerColor(), username);
         System.out.println("Player " + request.playerColor() + " has joined game " + request.gameID());
       } else {

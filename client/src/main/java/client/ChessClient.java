@@ -10,6 +10,7 @@ import java.util.Map;
 import model.AuthData;
 import ui.ChessBoardUi;
 import websocket.ServerMessageObserver;
+import static ui.EscapeSequences.*;
 
 public class ChessClient {
     private State state = State.PRE_LOGIN;
@@ -92,7 +93,7 @@ public class ChessClient {
         try {
             authData = server.login(username, password);
             state = State.POST_LOGIN;
-            System.out.print(help());
+            System.out.print(SET_TEXT_COLOR_BLUE + help());
             return String.format("Logged in as %s with authToken: %s", username, authData.authToken());
         } catch (ResponseException e) {
             return e.getMessage();
@@ -109,7 +110,7 @@ public class ChessClient {
         try {
             authData = server.register(username, password, email);
             state = State.POST_LOGIN;
-            System.out.print(help());
+            System.out.print(SET_TEXT_COLOR_BLUE + help());
             return String.format("Registered as %s with authToken: %s", username, authData.authToken());
         } catch (ResponseException e) {
             return e.getMessage();
@@ -121,7 +122,7 @@ public class ChessClient {
         } else {
             server.logout(authData);
             state=State.PRE_LOGIN;
-            System.out.print(help());
+            System.out.print(SET_TEXT_COLOR_BLUE + help());
             return "Logged out";
         }
     }
@@ -177,14 +178,14 @@ public class ChessClient {
 
             try {
                 gameData=server.join(authData.authToken(), gameID, color);
-                server.joinGame(authData.authToken(), gameID, color);
-                if (color.equals("white")) {
-                    ChessBoardUi.drawBoard(System.out, "WHITE");
-                } else {
+                server.joinGame(authData.authToken(), gameID);
+                if (color.equals("black")) {
                     ChessBoardUi.drawBoard(System.out, "BLACK");
+                } else {
+                    ChessBoardUi.drawBoard(System.out, "WHITE");
                 }
                 state=State.GAME_STATE;
-                help();
+                System.out.print(SET_TEXT_COLOR_BLUE + help());
                 return String.format("Joined %s as %s", gameData.gameName(), color);
             } catch (ResponseException e) {
                 return e.getMessage();
@@ -192,7 +193,9 @@ public class ChessClient {
         }
     }
     public String observe(String... params) throws ClientException {
-        return null;
+        String gameNumber = params[0];
+        join(gameNumber, "observer");
+        return "observer mode";
     }
     public String quit() {
         System.exit(0);

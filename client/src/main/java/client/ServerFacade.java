@@ -80,7 +80,7 @@ public class ServerFacade {
 
     return new GameData(gameID, result.whiteUsername(), result.blackUsername(), result.gameName(), result.game());
   }
-  public void joinGame(String authToken, Integer gameID, String color) throws ResponseException {
+  public void joinGame(String authToken, Integer gameID) throws ResponseException {
     try {
       UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
       String message = new Gson().toJson(command);

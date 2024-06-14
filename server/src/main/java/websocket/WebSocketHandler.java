@@ -90,6 +90,9 @@ public class WebSocketHandler {
   }
 
   private void notify(String username, String color, ConnectCommand command) {
+    if (color == null) {
+      color = "observer";
+    }
     String message = String.format("User " + username +
             " connected to game " + command.getGameID() +
             " as " + color);
