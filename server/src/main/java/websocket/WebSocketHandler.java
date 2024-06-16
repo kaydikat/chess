@@ -1,5 +1,6 @@
 package websocket;
 
+import chess.ChessBoard;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -15,6 +16,7 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import result.JoinGameResult;
 import websocket.commands.CommandDeserializer;
 import websocket.commands.ConnectCommand;
+import websocket.commands.LeaveGameCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
@@ -37,15 +39,20 @@ public class WebSocketHandler {
   @OnWebSocketMessage
   public void onMessage(Session session, String msg) throws Exception {
     UserGameCommand command = gson.fromJson(msg, UserGameCommand.class);
-    gson.fromJson(msg, ConnectCommand.class);
 
     String username = getUsername(command.getAuthString());
     String color = getColor(command.getGameID(), username);
 
     switch (command.getCommandType()) {
-      case CONNECT -> connect(session, username, color, (ConnectCommand) command);
+      case CONNECT -> {
+        //gson.fromJson(msg, ConnectCommand.class);
+        connect(session, username, color, (ConnectCommand) command);
+      }
       // case MAKE_MOVE -> makeMove(session, username, (MakeMoveCommand) command);
-      // case LEAVE -> leaveGame(session, username, (LeaveGameCommand) command);
+      case LEAVE -> {
+        //gson.fromJson(msg, LeaveGameCommand.class);
+        leaveGame(session, username, (LeaveGameCommand) command);
+      }
       // case RESIGN -> resign(session, username, (ResignCommand) command);
     }
   }
@@ -55,6 +62,19 @@ public class WebSocketHandler {
     sessions.add(command.getGameID(), session);
     loadGame(command.getGameID(), session, command);
     notify(username, color, command);
+    } catch (Exception e) {
+      error(session, e.getMessage());
+    }
+  }
+
+  private void leaveGame(Session session, String username, LeaveGameCommand command) {
+    try {
+      GameDao gameDao = GameDaoSQL.getInstance();
+      gameDao.removeColor(command.getGameID(), getColor(command.getGameID(), username));
+      String message = String.format("User " + username + " left game " + command.getGameID());
+      ServerMessage serverMessage = new NotificationMessage(message);
+      broadcast(command.getGameID(), serverMessage);
+      sessions.remove(command.getGameID(), session);
     } catch (Exception e) {
       error(session, e.getMessage());
     }
@@ -82,7 +102,8 @@ public class WebSocketHandler {
       GameDao gameDao = GameDaoSQL.getInstance();
       GameData gameData = gameDao.getGame(gameID);
       ChessGame game = gameData.game();
-      ServerMessage loadGameMessage = new LoadGameMessage(game);
+      String playerColor = getColor(gameID, getUsername(command.getAuthString()));
+      ServerMessage loadGameMessage = new LoadGameMessage(game, playerColor);
       broadcast(command.getGameID(), loadGameMessage);
     } catch (Exception e) {
       error(session, e.getMessage());

@@ -90,6 +90,16 @@ public class ServerFacade {
     }
   }
 
+  public void leaveGame(String authToken, Integer gameID) throws ResponseException {
+    try {
+      UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
+      String message = new Gson().toJson(command);
+      webSocketCommunicator.send(message);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   public void testWebSocket() throws Exception {
     webSocketCommunicator.send(gson.toJson("Test message"));
   }

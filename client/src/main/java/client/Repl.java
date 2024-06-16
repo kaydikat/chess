@@ -2,8 +2,11 @@ package client;
 
 import java.util.Scanner;
 
+import chess.ChessBoard;
+import chess.ChessGame;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import ui.ChessBoardUi;
 import websocket.ServerMessageObserver;
 import websocket.messages.*;
 
@@ -44,10 +47,11 @@ public class Repl implements ServerMessageObserver {
 
   @Override
   public void notify(ServerMessage message) {
-    switch (message.getServerMessageType()) {
+      switch (message.getServerMessageType()) {
       case NOTIFICATION -> displayNotification(((NotificationMessage) message).getMessage());
       case ERROR -> displayError(((ErrorMessage) message).getErrorMessage());
-      case LOAD_GAME -> loadGame(((LoadGameMessage) message).getGame());
+      case LOAD_GAME -> loadGame(((LoadGameMessage) message).getGame(),
+              ((LoadGameMessage) message).getPlayerColor());
     }
   }
 
@@ -57,9 +61,11 @@ public class Repl implements ServerMessageObserver {
     private void displayError(String message) {
         System.out.println(SET_TEXT_COLOR_RED + message);
     }
-    private void loadGame(String game) {
-        System.out.println(SET_TEXT_COLOR_GREEN + game);
-    }
+  private void loadGame(ChessGame game, String playerColor) {
+    ChessBoard board = game.getBoard();
+    new ChessBoardUi(board);
+    ChessBoardUi.drawBoard(System.out, playerColor);
+  }
 
 
   private void printPrompt() {

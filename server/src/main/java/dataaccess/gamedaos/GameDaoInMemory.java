@@ -60,6 +60,17 @@ public class GameDaoInMemory extends AbstractGameDao {
   }
 
   @Override
+  public void removeColor(Integer gameID, String playerColor) {
+    GameData game = games.get(gameID);
+    if (playerColor.equals("white")) {
+      game = new GameData(gameID, null, game.blackUsername(), game.gameName(), game.game());
+    } else if (playerColor.equals("black")) {
+      game = new GameData(gameID, game.whiteUsername(), null, game.gameName(), game.game());
+    }
+    games.put(gameID, game);
+  }
+
+  @Override
   public void clear() {
     games.clear();
   }

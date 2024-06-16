@@ -137,8 +137,8 @@ public class ChessClient {
 
             try {
                 gameData=server.create(authData.authToken(), gameName);
-                ChessBoard board = gameData.game().getBoard();
-                new ChessBoardUi(board);
+//                ChessBoard board = gameData.game().getBoard();
+//                new ChessBoardUi(board);
                 state=State.POST_LOGIN;
                 return String.format("Created %s with gameID %d", gameName, gameData.gameID());
             } catch (ResponseException e) {
@@ -156,8 +156,8 @@ public class ChessClient {
             gameMap.clear();
             int index = 1;
             for (GameData game : games) {
-                gameListBuilder.append(String.format("%d. %s: white = %s, black = %s\n",
-                        index, game.gameName(), game.whiteUsername(), game.blackUsername()));
+                gameListBuilder.append(String.format("%d. %d %s: white = %s, black = %s\n",
+                        index, game.gameID(), game.gameName(), game.whiteUsername(), game.blackUsername()));
                 gameMap.put(index, game.gameID());
                 index++;
             }
@@ -174,16 +174,15 @@ public class ChessClient {
             Integer gameNumber = Integer.valueOf(params[0]);
             String color = params[1];
 
-            Integer gameID = gameMap.get(gameNumber);
-
+            Integer gameID;
+            if (gameNumber > 999) {
+                gameID = gameNumber;
+            } else {
+                gameID=gameMap.get(gameNumber);
+            }
             try {
                 gameData=server.join(authData.authToken(), gameID, color);
                 server.joinGame(authData.authToken(), gameID);
-                if (color.equals("black")) {
-                    ChessBoardUi.drawBoard(System.out, "BLACK");
-                } else {
-                    ChessBoardUi.drawBoard(System.out, "WHITE");
-                }
                 state=State.GAME_STATE;
                 System.out.print(SET_TEXT_COLOR_BLUE + help());
                 return String.format("Joined %s as %s", gameData.gameName(), color);
@@ -214,8 +213,10 @@ public class ChessClient {
     public String resign() {
         return null;
     }
-    public String leave() {
-        return null;
+    public String leave() throws ResponseException {
+        server.leaveGame(authData.authToken(), gameData.gameID());
+        state = State.POST_LOGIN;
+        return String.format("Left game %s", gameData.gameName());
     }
 
     public String testWebSocket() {

@@ -12,12 +12,12 @@ public class CommandDeserializer implements JsonDeserializer<UserGameCommand> {
     String commandTypeString=jsonObject.get("commandType").getAsString();
     UserGameCommand.CommandType commandType=UserGameCommand.CommandType.valueOf(commandTypeString);
 
-//    return switch (commandType) {
-//      case CONNECT -> context.deserialize(jsonElement, ConnectCommand.class);
-//      case MAKE_MOVE -> context.deserialize(jsonElement, MakeMoveCommand.class);
-//      case LEAVE -> context.deserialize(jsonElement, LeaveGameCommand.class);
-//      case RESIGN -> context.deserialize(jsonElement, ResignCommand.class);
-      return context.deserialize(jsonElement, ConnectCommand.class);
+    return switch (commandType) {
+      case CONNECT -> context.deserialize(jsonElement, ConnectCommand.class);
+      case MAKE_MOVE -> context.deserialize(jsonElement, MakeMoveCommand.class);
+      case LEAVE -> context.deserialize(jsonElement, LeaveGameCommand.class);
+      case RESIGN -> context.deserialize(jsonElement, ResignCommand.class);
+    };
   }
 }
 

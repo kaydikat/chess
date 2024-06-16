@@ -11,5 +11,6 @@ public interface GameDao {
   Collection<GameData> listGames() throws DataAccessException;
   String getPlayerColor(Integer gameID, String username) throws DataAccessException;
   void addColor(Integer gameID, String playerColor, String username) throws DataAccessException;
+  void removeColor(Integer gameID, String playerColor) throws DataAccessException;
   void clear();
 }

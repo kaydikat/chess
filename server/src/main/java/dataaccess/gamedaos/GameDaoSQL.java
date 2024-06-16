@@ -129,6 +129,21 @@ public class GameDaoSQL extends AbstractGameDao {
     }
     return null;
   }
+  @Override
+  public void removeColor(Integer gameID, String playerColor) throws DataAccessException {
+    try (var conn = DatabaseManager.getConnection()) {
+      var statement = "UPDATE game SET whiteUsername=NULL WHERE gameID=?";
+      if (playerColor.equals("black")) {
+        statement = "UPDATE game SET blackUsername=NULL WHERE gameID=?";
+      }
+      try (var preparedStatement = conn.prepareStatement(statement)) {
+        preparedStatement.setInt(1, gameID);
+        preparedStatement.executeUpdate();
+      }
+    } catch (SQLException e) {
+      throw new DataAccessException("Error removing color: " + e.getMessage());
+    }
+  }
 
   @Override
   public void clear() {
