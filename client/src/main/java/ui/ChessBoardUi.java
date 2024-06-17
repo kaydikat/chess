@@ -31,8 +31,8 @@ public class ChessBoardUi {
     String[] letterHeaders = {"A", "B", "C", "D", "E", "F", "G", "H"};
     out.print(" ".repeat(SQUARE_SIZE_IN_CHARS));
     if (playerColor.equalsIgnoreCase("black")) {
-      for (int boardCol = 8; boardCol > 0; --boardCol) {
-        drawHeader(out, letterHeaders[boardCol - 1]);
+      for (int boardCol = BOARD_SIZE_IN_SQUARES - 1; boardCol >= 0; --boardCol) {
+        drawHeader(out, letterHeaders[boardCol]);
       }
     } else {
       for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
@@ -58,7 +58,6 @@ public class ChessBoardUi {
       printHeaderText(out, " " + (8 - boardRow) + " ");
     }
   }
-
   private static void printHeaderText(PrintStream out, String text) {
     out.print(SET_BG_COLOR_BLACK);
     out.print(SET_TEXT_COLOR_GREEN);
@@ -96,8 +95,10 @@ public class ChessBoardUi {
     }
   }
 
+
   private static void drawSquare(PrintStream out, int boardRow, int boardCol, boolean isBlack, String playerColor) {
-    int actualRow = playerColor.equalsIgnoreCase("black") ? BOARD_SIZE_IN_SQUARES - boardRow - 1 : boardRow;
+    // Adjust the actual row to match the new array orientation
+    int actualRow = BOARD_SIZE_IN_SQUARES - boardRow - 1;
     int actualCol = playerColor.equalsIgnoreCase("black") ? BOARD_SIZE_IN_SQUARES - boardCol - 1 : boardCol;
 
     ChessPiece piece = CHESS_BOARD.getPiece(new ChessPosition(actualRow + 1, actualCol + 1)); // +1 to map to 1-based positions
@@ -136,6 +137,7 @@ public class ChessBoardUi {
     }
   }
 
+
   private static void drawBlackSquare(PrintStream out, int boardRow, int boardCol, String playerColor) {
     drawSquare(out, boardRow, boardCol, true, playerColor);
   }
@@ -152,9 +154,9 @@ public class ChessBoardUi {
   private static void printPlayer(PrintStream out, String player, ChessGame.TeamColor teamColor) {
     out.print(SET_TEXT_BOLD);
     if (teamColor == ChessGame.TeamColor.WHITE) {
-      out.print(SET_TEXT_COLOR_RED);
-    } else {
       out.print(SET_TEXT_COLOR_BLUE);
+    } else {
+      out.print(SET_TEXT_COLOR_RED);
     }
     out.print(player);
   }

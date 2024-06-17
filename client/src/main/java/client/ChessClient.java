@@ -139,8 +139,6 @@ public class ChessClient {
 
             try {
                 gameData=server.create(authData.authToken(), gameName);
-//                ChessBoard board = gameData.game().getBoard();
-//                new ChessBoardUi(board);
                 state=State.POST_LOGIN;
                 return String.format("Created %s with gameID %d", gameName, gameData.gameID());
             } catch (ResponseException e) {
