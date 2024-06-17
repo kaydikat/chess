@@ -96,6 +96,14 @@ public class ChessGame {
         }
         return validMoves;
     }
+
+    public void resign(){
+        for (int i=0;i<8;i++){
+            for (int j=0;j<8;j++){
+                legalMoves[i][j]=false;
+            }
+        }
+    }
     public static boolean[][] getLegalMoves(){
         return legalMoves;
     }

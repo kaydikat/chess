@@ -209,11 +209,13 @@ public class ChessClient {
         if (params.length != 2) {
             return "Make move requires 2 parameters: <start> <end>";
         }
-        ChessPosition startPosition = parsePosition(params[0]);
-        ChessPosition endPosition = parsePosition(params[1]);
+        String start = params[0];
+        String end = params[1];
+        ChessPosition startPosition = parsePosition(start);
+        ChessPosition endPosition = parsePosition(end);
         ChessPiece.PieceType promotionPiece = null;
-        server.makeMove(authData.authToken(), gameData.gameID(), startPosition, endPosition, promotionPiece);
-        return "Move made from " + params[0] + " to " + params[1];
+        server.makeMove(authData.authToken(), gameData.gameID(), startPosition, endPosition, promotionPiece, start, end);
+        return null;
     }
 
     private ChessPosition parsePosition(String position) {

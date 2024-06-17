@@ -104,10 +104,10 @@ public class ServerFacade {
   }
 
   public void makeMove(String authToken,Integer gameID, ChessPosition startPosition, ChessPosition endPosition,
-                       ChessPiece.PieceType promotionPiece) {
+                       ChessPiece.PieceType promotionPiece, String start, String end) {
     try {
       ChessMove move = new ChessMove(startPosition, endPosition, promotionPiece);
-      UserGameCommand command = new MakeMoveCommand(authToken, gameID, move);
+      UserGameCommand command = new MakeMoveCommand(authToken, gameID, move, start, end);
       String message = new Gson().toJson(command);
       webSocketCommunicator.send(message);
     } catch (Exception e) {

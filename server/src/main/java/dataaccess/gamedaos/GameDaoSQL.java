@@ -110,25 +110,26 @@ public class GameDaoSQL extends AbstractGameDao {
         preparedStatement.setInt(1, gameID);
         try (var rs = preparedStatement.executeQuery()) {
           if (rs.next()) {
-            String whiteUsername=rs.getString("whiteUsername");
-            String blackUsername=rs.getString("blackUsername");
-            if (whiteUsername == null && blackUsername == null) {
-              return "observer";
-            } else if (whiteUsername.equals(username)) {
+            String whiteUsername = rs.getString("whiteUsername");
+            String blackUsername = rs.getString("blackUsername");
+
+            if (username.equals(whiteUsername)) {
               return "white";
-            } else if (blackUsername.equals(username)) {
+            } else if (username.equals(blackUsername)) {
               return "black";
             } else {
               return "observer";
             }
+          } else {
+            throw new DataAccessException("Game not found for gameID: " + gameID);
           }
         }
       }
     } catch (SQLException e) {
       throw new DataAccessException("Error getting player color: " + e.getMessage());
     }
-    return null;
   }
+
   @Override
   public void removeColor(Integer gameID, String playerColor) throws DataAccessException {
     try (var conn = DatabaseManager.getConnection()) {

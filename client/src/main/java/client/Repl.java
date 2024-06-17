@@ -65,8 +65,7 @@ public class Repl implements ServerMessageObserver {
     ChessBoard board = game.getBoard();
     new ChessBoardUi(board);
     if (playerColor.equalsIgnoreCase("black")) {
-      ChessBoardUi.flipBoard();
-      ChessBoardUi.drawBoard(System.out, "white");
+      ChessBoardUi.drawBoard(System.out, "black");
     } else {
       ChessBoardUi.drawBoard(System.out, "white");
     }
