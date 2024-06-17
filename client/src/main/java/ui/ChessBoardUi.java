@@ -8,14 +8,14 @@ import chess.ChessGame;
 
 import static ui.EscapeSequences.*;
 public class ChessBoardUi {
-  private static ChessBoard CHESS_BOARD;
-  private static final boolean[][] legalMoves = new boolean[8][8];
+  private static ChessBoard chessBoard;
+  private final boolean[][] legalMoves = new boolean[8][8];
   private static final int BOARD_SIZE_IN_SQUARES = 8;
   private static final int SQUARE_SIZE_IN_CHARS = 3;
   public static boolean isFlipped = false;
 
   public ChessBoardUi(ChessBoard board) {
-    CHESS_BOARD = board;
+    chessBoard = board;
   }
 
   public void drawBoard(PrintStream out, String playerColor) {
@@ -75,7 +75,7 @@ public class ChessBoardUi {
     int actualRow = isFlipped ? boardRow : BOARD_SIZE_IN_SQUARES - boardRow - 1;
     int actualCol = playerColor.equalsIgnoreCase("black") ^ isFlipped ? BOARD_SIZE_IN_SQUARES - boardCol - 1 : boardCol;
 
-    ChessPiece piece = CHESS_BOARD.getPiece(new ChessPosition(actualRow + 1, actualCol + 1)); // +1 to map to 1-based positions
+    ChessPiece piece = chessBoard.getPiece(new ChessPosition(actualRow + 1, actualCol + 1)); // +1 to map to 1-based positions
     if (isBlack) {
       out.print(SET_BG_COLOR_WHITE);
     } else {

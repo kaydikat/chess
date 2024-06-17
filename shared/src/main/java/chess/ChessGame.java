@@ -14,7 +14,7 @@ public class ChessGame {
     private ChessBoard chessBoard;
     private String whiteResigned;
     private String blackResigned;
-    private static final boolean[][] legalMoves=new boolean[8][8];
+    private final boolean[][] legalMoves =new boolean[8][8];
 
     public ChessGame() {
         this.teamTurn = TeamColor.WHITE;
@@ -30,10 +30,6 @@ public class ChessGame {
         } else {
             blackResigned = username;
         }
-    }
-
-    public boolean hasResigned(String username) {
-        return username.equals(whiteResigned) || username.equals(blackResigned);
     }
 
     /**
@@ -119,7 +115,7 @@ public class ChessGame {
             }
         }
     }
-    public static boolean[][] getLegalMoves(){
+    public boolean[][] getLegalMoves(){
         return legalMoves;
     }
     /**

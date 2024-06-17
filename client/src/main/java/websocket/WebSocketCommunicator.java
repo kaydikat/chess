@@ -39,7 +39,7 @@ public class WebSocketCommunicator extends Endpoint {
     });
   }
 
-  @OnOpen
+  @Override
   public void onOpen(Session session, EndpointConfig endpointConfig) {}
 
   public void send(String msg) throws Exception {

@@ -72,16 +72,16 @@ public class WebSocketHandler {
   private void makeMove(Session session, String username, MakeMoveCommand command) {
     try {
       ChessGame game = getGame(command.getGameID());
-      if (!isValidTurn(command.getGameID(), username)) {
+      if (resigned) {
+        error(session, "Game is over, cannot make moves");
+        return;
+      }
+      else if (!isValidTurn(command.getGameID(), username)) {
         error(session, "Not your turn");
         return;
       }
-      if (isObserver(command.getGameID(), username)) {
+      else if (isObserver(command.getGameID(), username)) {
         error(session, "Observers cannot make moves");
-        return;
-      }
-      if (resigned) {
-        error(session, "Game is over, cannot make moves");
         return;
       }
       game.makeMove(command.getMove());

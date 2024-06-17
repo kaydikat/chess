@@ -124,8 +124,4 @@ public class ServerFacade {
       throw new RuntimeException(e);
     }
   }
-
-  public void testWebSocket() throws Exception {
-    webSocketCommunicator.send(gson.toJson("Test message"));
-  }
 }
