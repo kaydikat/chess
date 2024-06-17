@@ -103,6 +103,16 @@ public class ServerFacade {
     }
   }
 
+  public void resign(String authToken, Integer gameID) throws ResponseException {
+    try {
+      UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
+      String message = new Gson().toJson(command);
+      webSocketCommunicator.send(message);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   public void makeMove(String authToken,Integer gameID, ChessPosition startPosition, ChessPosition endPosition,
                        ChessPiece.PieceType promotionPiece, String start, String end) {
     try {

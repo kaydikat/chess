@@ -35,7 +35,6 @@ public class ChessClient {
                     "  register <USERNAME> <PASSWORD> <EMAIL> - creates an account\n" +
                     "  login <USERNAME> <PASSWORD> - to play chess\n" +
                     "  help - show this message\n" +
-                    "  testws - test the WebSocket connection\n" +
                     "  quit - exit the program\n";
         } if (state == State.POST_LOGIN) {
             return "Commands:\n" +
@@ -70,7 +69,6 @@ public class ChessClient {
                 case "list" -> list();
                 case "join" -> join(params);
                 case "observe" -> observe(params);
-                case "testws" -> testWebSocket();
                 case "quit" -> quit();
                 case "redraw" -> redraw();
                 case "move" -> makeMove(params);
@@ -201,7 +199,9 @@ public class ChessClient {
         return "Goodbye!";
     }
 
-    public String redraw() {
+    public String redraw() throws ResponseException {
+        Integer gameID = gameData.gameID();
+        server.joinGame(authData.authToken(), gameID);
         return null;
     }
 
@@ -238,7 +238,12 @@ public class ChessClient {
         return null;
     }
     public String resign() {
-        return null;
+        try {
+            server.resign(authData.authToken(), gameData.gameID());
+            return String.format("Resigned from game %s", gameData.gameName());
+        } catch (ResponseException e) {
+            return e.getMessage();
+        }
     }
     public String leave() throws ResponseException {
         server.leaveGame(authData.authToken(), gameData.gameID());
@@ -246,12 +251,4 @@ public class ChessClient {
         return String.format("Left game %s", gameData.gameName());
     }
 
-    public String testWebSocket() {
-        try {
-            server.testWebSocket();
-            return "WebSocket connection test passed!";
-        } catch (Exception e) {
-            return "WebSocket connection test failed: " + e.getMessage();
-        }
-    }
 }

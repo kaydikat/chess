@@ -12,6 +12,7 @@ import dataaccess.authdaos.AuthDaoSQL;
 import dataaccess.gamedaos.GameDao;
 import dataaccess.gamedaos.GameDaoSQL;
 import model.GameData;
+import org.eclipse.jetty.server.Authentication;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.commands.*;
@@ -25,11 +26,13 @@ import static authentication.CheckAuth.checkAuth;
 public class WebSocketHandler {
   private final SessionManager sessions = new SessionManager();
   protected final Gson gson;
+  private boolean resigned;
 
   public WebSocketHandler() {
     GsonBuilder builder = new GsonBuilder();
     builder.registerTypeAdapter(UserGameCommand.class, new CommandDeserializer());
     this.gson = builder.create();
+    resigned = false;
   }
 
   @OnWebSocketMessage
@@ -77,7 +80,7 @@ public class WebSocketHandler {
         error(session, "Observers cannot make moves");
         return;
       }
-      if (isGameOver(game)) {
+      if (resigned) {
         error(session, "Game is over, cannot make moves");
         return;
       }
@@ -90,6 +93,7 @@ public class WebSocketHandler {
     } catch (Exception e) {
       error(session, e.getMessage());
     }
+
   }
 
   private void leaveGame(Session session, String username, LeaveGameCommand command) {
@@ -110,12 +114,18 @@ public class WebSocketHandler {
         return;
       }
       ChessGame game = getGame(command.getGameID());
-      if (game.hasResigned(username)) {
-        error(session, "You have already resigned");
+      if (isGameOver(game)) {
+        error(session, "Game is over, cannot resign");
         return;
       }
+      if (resigned) {
+        error(session, "Cannot resign after your opponent has resigned");
+        return;
+      }
+
       game.resign(username, color);
       notify(username, command, session);
+      resigned = true;
     } catch (Exception e) {
       error(session, e.getMessage());
     }
@@ -187,7 +197,7 @@ public class WebSocketHandler {
         message = String.format("User %s made move %s to %s", username, makeMoveCommand.getStart(), makeMoveCommand.getEnd());
       }
       case LEAVE -> message = String.format("User %s left game %d", username, command.getGameID());
-      case RESIGN -> message = (customMessage != null) ? customMessage : String.format("User %s resigned from game %d", username, command.getGameID());
+      case RESIGN -> message = String.format("User %s resigned from game %d", username, command.getGameID());
       default -> throw new IllegalArgumentException("Unexpected command type: " + command.getCommandType());
     }
     ServerMessage serverMessage = new NotificationMessage(message);
@@ -232,5 +242,6 @@ public class WebSocketHandler {
   private boolean isGameOver(ChessGame game) {
     return game.isInCheckmate(ChessGame.TeamColor.WHITE) || game.isInCheckmate(ChessGame.TeamColor.BLACK) || game.isInStalemate(game.getTeamTurn());
   }
+
 }
 
