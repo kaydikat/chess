@@ -12,21 +12,20 @@ public class ChessBoardUi {
   private static final boolean[][] legalMoves = ChessGame.getLegalMoves();
   private static final int BOARD_SIZE_IN_SQUARES = 8;
   private static final int SQUARE_SIZE_IN_CHARS = 3;
-  private static boolean isFlipped = false;
+  public static boolean isFlipped = false;
 
   public ChessBoardUi(ChessBoard board) {
     CHESS_BOARD = board;
   }
 
-  public static void drawBoard(PrintStream out, String playerColor) {
+  public void drawBoard(PrintStream out, String playerColor) {
     out.print(ERASE_SCREEN);
-
     drawHeaders(out, playerColor);
     drawChessBoard(out, playerColor);
     drawHeaders(out, playerColor);
   }
 
-  public static void flipBoard() {
+  public void flipBoard() {
     isFlipped = !isFlipped;
   }
 
@@ -73,7 +72,6 @@ public class ChessBoardUi {
   }
 
   private static void drawSquare(PrintStream out, int boardRow, int boardCol, boolean isBlack, String playerColor) {
-    // Adjust the actual row to match the flipped state
     int actualRow = isFlipped ? boardRow : BOARD_SIZE_IN_SQUARES - boardRow - 1;
     int actualCol = playerColor.equalsIgnoreCase("black") ^ isFlipped ? BOARD_SIZE_IN_SQUARES - boardCol - 1 : boardCol;
 

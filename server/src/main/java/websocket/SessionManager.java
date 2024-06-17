@@ -2,6 +2,7 @@ package websocket;
 
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
+import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 import java.io.IOException;
 import java.util.Set;
@@ -37,6 +38,28 @@ public class SessionManager {
       for (Session session : sessions) {
         if (session.isOpen()) {
           session.getRemote().sendString(gson.toJson(message));
+        }
+      }
+    }
+  }
+
+  public void broadcastToOthers(Integer gameID, Session session, ServerMessage message) throws IOException {
+    Set<Session> sessions = gameSessions.get(gameID);
+    if (sessions != null) {
+      for (Session s : sessions) {
+        if (s != session && s.isOpen()) {
+          s.getRemote().sendString(gson.toJson(message));
+        }
+      }
+    }
+  }
+
+  public void broadcastToSelf(Integer gameID, Session session, ServerMessage message) throws IOException {
+    Set<Session> sessions = gameSessions.get(gameID);
+    if (sessions != null) {
+      for (Session s : sessions) {
+        if (s == session && s.isOpen()) {
+          s.getRemote().sendString(gson.toJson(message));
         }
       }
     }

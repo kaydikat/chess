@@ -11,15 +11,12 @@ import dataaccess.authdaos.AuthDaoSQL;
 import dataaccess.gamedaos.GameDao;
 import dataaccess.gamedaos.GameDaoSQL;
 import model.GameData;
-import model.UserData;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import result.JoinGameResult;
 import websocket.commands.*;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.ServerMessage;
-import websocket.SessionManager;
 import websocket.messages.NotificationMessage;
 import org.eclipse.jetty.websocket.api.Session;
 @WebSocket
@@ -52,8 +49,8 @@ public class WebSocketHandler {
   private void connect(Session session, String username, String color, ConnectCommand command) {
     try {
       sessions.add(command.getGameID(), session);
-      loadGame(command.getGameID(), session, command);
-      notify(username, command);
+      loadGameConnect(command.getGameID(), session, command);
+      notify(username, command, session);
     } catch (Exception e) {
       error(session, e.getMessage());
     }
@@ -64,8 +61,8 @@ public class WebSocketHandler {
       ChessGame game = getGame(command.getGameID());
       game.makeMove(command.getMove());
       GameDaoSQL.getInstance().updateGame(command.getGameID(), game);
-      loadGame(command.getGameID(), session, command);
-      notify(username, command);
+      loadGameMakeMove(command.getGameID(), session, command);
+      notify(username, command, session);
     } catch (Exception e) {
       error(session, e.getMessage());
     }
@@ -75,7 +72,7 @@ public class WebSocketHandler {
     try {
       GameDao gameDao = GameDaoSQL.getInstance();
       gameDao.removeColor(command.getGameID(), getColor(command.getGameID(), username));
-      notify(username, command);
+      notify(username, command, session);
       sessions.remove(command.getGameID(), session);
     } catch (Exception e) {
       error(session, e.getMessage());
@@ -86,7 +83,7 @@ public class WebSocketHandler {
     try {
       ChessGame game = getGame(command.getGameID());
       game.resign();
-      notify(username, command);
+      notify(username, command, session);
     } catch (Exception e) {
       error(session, e.getMessage());
     }
@@ -102,24 +99,39 @@ public class WebSocketHandler {
     return gameDao.getPlayerColor(gameID, username);
   }
 
-  private void broadcast(Integer gameID, ServerMessage message) {
+  private void broadcast(Integer gameID, ServerMessage message, UserGameCommand command, Session session) {
     try {
-      sessions.broadcast(gameID, message);
+      if (command.getCommandType() == UserGameCommand.CommandType.RESIGN) {
+        sessions.broadcast(gameID, message);
+      } else {
+        sessions.broadcastToOthers(gameID, session, message);
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
-  private void loadGame(Integer gameID, Session session, UserGameCommand command) {
+  private void loadGameConnect(Integer gameID, Session session, UserGameCommand command) {
     try {
       ChessGame game = getGame(gameID);
       String playerColor = getColor(gameID, getUsername(command.getAuthString()));
       ServerMessage loadGameMessage = new LoadGameMessage(game, playerColor);
-      broadcast(command.getGameID(), loadGameMessage);
+      sessions.broadcastToSelf(command.getGameID(), session, loadGameMessage);
     } catch (Exception e) {
       error(session, e.getMessage());
     }
   }
+  private void loadGameMakeMove(Integer gameID, Session session, UserGameCommand command) {
+    try {
+      ChessGame game = getGame(gameID);
+      String playerColor = getColor(gameID, getUsername(command.getAuthString()));
+      ServerMessage loadGameMessage = new LoadGameMessage(game, playerColor);
+      sessions.broadcast(command.getGameID(), loadGameMessage);
+    } catch (Exception e) {
+      error(session, e.getMessage());
+    }
+  }
+
 
   private ChessGame getGame(Integer gameID) throws DataAccessException {
     GameDao gameDao = GameDaoSQL.getInstance();
@@ -127,7 +139,7 @@ public class WebSocketHandler {
     return gameData.game();
   }
 
-  private void notify(String username, UserGameCommand command) throws DataAccessException {
+  private void notify(String username, UserGameCommand command, Session session) throws DataAccessException {
     String message;
     switch (command.getCommandType()) {
       case CONNECT -> {
@@ -143,7 +155,7 @@ public class WebSocketHandler {
       default -> throw new IllegalArgumentException("Unexpected command type: " + command.getCommandType());
     }
     ServerMessage serverMessage = new NotificationMessage(message);
-    broadcast(command.getGameID(), serverMessage);
+    broadcast(command.getGameID(), serverMessage, command, session);
   }
 
   private void error(Session session, String message) {

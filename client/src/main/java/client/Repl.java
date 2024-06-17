@@ -23,18 +23,22 @@ public class Repl implements ServerMessageObserver {
     this.gson = builder.create();
   }
 
+
   public void run() {
     System.out.println(SET_TEXT_COLOR_WHITE + "Welcome to 240 chess.");
     System.out.print(client.help());
 
     Scanner scanner = new Scanner(System.in);
-    var result = "";
+    String result = "";  // Initialize result to an empty string
     while (!result.equals("quit")) {
       printPrompt();
       String line = scanner.nextLine();
 
       try {
         result = client.eval(line);
+        if (result == null) {
+          result = "";
+        }
         System.out.print(SET_TEXT_COLOR_BLUE + result);
       } catch (Throwable e) {
         var msg = e.toString();
@@ -62,12 +66,13 @@ public class Repl implements ServerMessageObserver {
         System.out.println(SET_TEXT_COLOR_RED + message);
     }
   private void loadGame(ChessGame game, String playerColor) {
-    ChessBoard board = game.getBoard();
-    new ChessBoardUi(board);
-    if (playerColor.equalsIgnoreCase("black")) {
-      ChessBoardUi.drawBoard(System.out, "black");
+    ChessBoard board=game.getBoard();
+    ChessBoardUi chessBoardUi=new ChessBoardUi(board);
+    if (playerColor.equalsIgnoreCase("WHITE")) {
+      chessBoardUi.drawBoard(System.out, "white");
     } else {
-      ChessBoardUi.drawBoard(System.out, "white");
+      chessBoardUi.flipBoard();
+      chessBoardUi.drawBoard(System.out, "white");
     }
   }
 
