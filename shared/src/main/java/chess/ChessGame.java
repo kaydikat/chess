@@ -12,14 +12,29 @@ import java.util.Collection;
 public class ChessGame {
     private TeamColor teamTurn;
     private ChessBoard chessBoard;
+    private String whiteResigned;
+    private String blackResigned;
     private static final boolean[][] legalMoves=new boolean[8][8];
 
     public ChessGame() {
         this.teamTurn = TeamColor.WHITE;
         this.chessBoard = new ChessBoard();
         this.chessBoard.resetBoard();
+        this.whiteResigned = null;
+        this.blackResigned = null;
     }
 
+    public void resign(String username, String color) {
+        if (color.equals("white")) {
+            whiteResigned = username;
+        } else {
+            blackResigned = username;
+        }
+    }
+
+    public boolean hasResigned(String username) {
+        return username.equals(whiteResigned) || username.equals(blackResigned);
+    }
 
     /**
      * @return Which team's turn it is

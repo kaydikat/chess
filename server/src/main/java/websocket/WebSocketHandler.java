@@ -3,6 +3,7 @@ package websocket;
 import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dataaccess.DataAccessException;
@@ -19,6 +20,7 @@ import websocket.messages.LoadGameMessage;
 import websocket.messages.ServerMessage;
 import websocket.messages.NotificationMessage;
 import org.eclipse.jetty.websocket.api.Session;
+import static authentication.CheckAuth.checkAuth;
 @WebSocket
 public class WebSocketHandler {
   private final SessionManager sessions = new SessionManager();
@@ -27,7 +29,7 @@ public class WebSocketHandler {
   public WebSocketHandler() {
     GsonBuilder builder = new GsonBuilder();
     builder.registerTypeAdapter(UserGameCommand.class, new CommandDeserializer());
-    this.gson = builder.create();;
+    this.gson = builder.create();
   }
 
   @OnWebSocketMessage
@@ -35,6 +37,14 @@ public class WebSocketHandler {
     UserGameCommand command = gson.fromJson(msg, UserGameCommand.class);
 
     Integer gameID = command.getGameID();
+    if (!isValidGameID(gameID)) {
+      error(session, "Invalid game ID: " + gameID);
+      return;
+    }
+    if (!checkAuth(command.getAuthString())) {
+      error(session, "Invalid auth token: " + command.getAuthString());
+      return;
+    }
     String username = getUsername(command.getAuthString());
     String color = getColor(gameID, username);
 
@@ -42,7 +52,7 @@ public class WebSocketHandler {
       case CONNECT -> connect(session, username, color, (ConnectCommand) command);
       case MAKE_MOVE -> makeMove(session, username, (MakeMoveCommand) command);
       case LEAVE -> leaveGame(session, username, (LeaveGameCommand) command);
-      case RESIGN -> resign(session, username, (ResignCommand) command);
+      case RESIGN -> resign(session, username, color, (ResignCommand) command);
     }
   }
 
@@ -59,10 +69,24 @@ public class WebSocketHandler {
   private void makeMove(Session session, String username, MakeMoveCommand command) {
     try {
       ChessGame game = getGame(command.getGameID());
+      if (!isValidTurn(command.getGameID(), username)) {
+        error(session, "Not your turn");
+        return;
+      }
+      if (isObserver(command.getGameID(), username)) {
+        error(session, "Observers cannot make moves");
+        return;
+      }
+      if (isGameOver(game)) {
+        error(session, "Game is over, cannot make moves");
+        return;
+      }
       game.makeMove(command.getMove());
       GameDaoSQL.getInstance().updateGame(command.getGameID(), game);
       loadGameMakeMove(command.getGameID(), session, command);
       notify(username, command, session);
+    } catch (InvalidMoveException e) {
+      error(session, "Invalid move");
     } catch (Exception e) {
       error(session, e.getMessage());
     }
@@ -79,10 +103,18 @@ public class WebSocketHandler {
     }
   }
 
-  private void resign(Session session, String username, ResignCommand command) {
+  private void resign(Session session, String username, String color, ResignCommand command) {
     try {
+      if (isObserver(command.getGameID(), username)) {
+        notify(username, command, session, "Observers cannot resign");
+        return;
+      }
       ChessGame game = getGame(command.getGameID());
-      game.resign();
+      if (game.hasResigned(username)) {
+        error(session, "You have already resigned");
+        return;
+      }
+      game.resign(username, color);
       notify(username, command, session);
     } catch (Exception e) {
       error(session, e.getMessage());
@@ -121,6 +153,7 @@ public class WebSocketHandler {
       error(session, e.getMessage());
     }
   }
+
   private void loadGameMakeMove(Integer gameID, Session session, UserGameCommand command) {
     try {
       ChessGame game = getGame(gameID);
@@ -132,7 +165,6 @@ public class WebSocketHandler {
     }
   }
 
-
   private ChessGame getGame(Integer gameID) throws DataAccessException {
     GameDao gameDao = GameDaoSQL.getInstance();
     GameData gameData = gameDao.getGame(gameID);
@@ -140,6 +172,10 @@ public class WebSocketHandler {
   }
 
   private void notify(String username, UserGameCommand command, Session session) throws DataAccessException {
+    notify(username, command, session, null);
+  }
+
+  private void notify(String username, UserGameCommand command, Session session, String customMessage) throws DataAccessException {
     String message;
     switch (command.getCommandType()) {
       case CONNECT -> {
@@ -151,7 +187,7 @@ public class WebSocketHandler {
         message = String.format("User %s made move %s to %s", username, makeMoveCommand.getStart(), makeMoveCommand.getEnd());
       }
       case LEAVE -> message = String.format("User %s left game %d", username, command.getGameID());
-      case RESIGN -> message = String.format("User %s resigned from game %d", username, command.getGameID());
+      case RESIGN -> message = (customMessage != null) ? customMessage : String.format("User %s resigned from game %d", username, command.getGameID());
       default -> throw new IllegalArgumentException("Unexpected command type: " + command.getCommandType());
     }
     ServerMessage serverMessage = new NotificationMessage(message);
@@ -166,4 +202,35 @@ public class WebSocketHandler {
       e.printStackTrace();
     }
   }
+
+  private boolean isValidGameID(Integer gameID) {
+    try {
+      GameDao gameDao = GameDaoSQL.getInstance();
+      GameData gameData = gameDao.getGame(gameID);
+      return gameData != null;
+    } catch (DataAccessException e) {
+      return false;
+    }
+  }
+
+  private boolean isValidTurn(Integer gameID, String username) {
+    try {
+      ChessGame game = getGame(gameID);
+      GameDao gameDao = GameDaoSQL.getInstance();
+      return gameDao.getPlayerColor(gameID, username).equalsIgnoreCase(game.getTeamTurn().toString());
+    } catch (DataAccessException e) {
+      return false;
+    }
+  }
+
+  private boolean isObserver(Integer gameID, String username) throws DataAccessException {
+    GameDao gameDao = GameDaoSQL.getInstance();
+    String color = gameDao.getPlayerColor(gameID, username);
+    return color == null;
+  }
+
+  private boolean isGameOver(ChessGame game) {
+    return game.isInCheckmate(ChessGame.TeamColor.WHITE) || game.isInCheckmate(ChessGame.TeamColor.BLACK) || game.isInStalemate(game.getTeamTurn());
+  }
 }
+
