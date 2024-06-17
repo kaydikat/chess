@@ -73,7 +73,7 @@ public class ChessClient {
                 case "testws" -> testWebSocket();
                 case "quit" -> quit();
                 case "redraw" -> redraw();
-                case "make move" -> makeMove(params);
+                case "move" -> makeMove(params);
                 case "highlight" -> highlight(params);
                 case "resign" -> resign();
                 case "leave" -> leave();
