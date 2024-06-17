@@ -1,5 +1,7 @@
 package dataaccess.gamedaos;
 
+import chess.ChessGame;
+import chess.ChessMove;
 import dataaccess.DataAccessException;
 import model.GameData;
 
@@ -68,6 +70,13 @@ public class GameDaoInMemory extends AbstractGameDao {
       game = new GameData(gameID, game.whiteUsername(), null, game.gameName(), game.game());
     }
     games.put(gameID, game);
+  }
+
+  @Override
+  public void updateGame(Integer gameID, ChessGame game) {
+    GameData gameData = games.get(gameID);
+    gameData = new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game);
+    games.put(gameID, gameData);
   }
 
   @Override

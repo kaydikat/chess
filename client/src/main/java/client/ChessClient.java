@@ -1,6 +1,8 @@
 package client;
 
 import chess.ChessBoard;
+import chess.ChessPiece;
+import chess.ChessPosition;
 import responseexception.ResponseException;
 import model.GameData;
 import java.util.Arrays;
@@ -204,8 +206,33 @@ public class ChessClient {
     public String redraw() {
         return null;
     }
+
     public String makeMove(String... params) {
-        return null;
+        if (params.length != 2) {
+            return "Make move requires 2 parameters: <start> <end>";
+        }
+        ChessPosition startPosition = parsePosition(params[0]);
+        ChessPosition endPosition = parsePosition(params[1]);
+        ChessPiece.PieceType promotionPiece = null;
+        server.makeMove(authData.authToken(), gameData.gameID(), startPosition, endPosition, promotionPiece);
+        return "Move made from " + params[0] + " to " + params[1];
+    }
+
+    private ChessPosition parsePosition(String position) {
+        Map<String, Integer> colMap = createColumnMap();
+        String col = position.substring(0, 1);
+        int row = Integer.parseInt(position.substring(1));
+        return new ChessPosition(row, colMap.get(col));
+    }
+
+    private Map<String, Integer> createColumnMap() {
+        Map<String, Integer> colMap = new HashMap<>();
+        char letter = 'a';
+        for (int i = 1; i <= 8; i++) {
+            colMap.put(String.valueOf(letter), i);
+            letter++;
+        }
+        return colMap;
     }
     public String highlight(String... params) {
         return null;

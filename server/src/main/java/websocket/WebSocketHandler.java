@@ -14,10 +14,7 @@ import model.UserData;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import result.JoinGameResult;
-import websocket.commands.CommandDeserializer;
-import websocket.commands.ConnectCommand;
-import websocket.commands.LeaveGameCommand;
-import websocket.commands.UserGameCommand;
+import websocket.commands.*;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.ServerMessage;
@@ -44,17 +41,11 @@ public class WebSocketHandler {
     String color = getColor(command.getGameID(), username);
 
     switch (command.getCommandType()) {
-      case CONNECT -> {
-        //gson.fromJson(msg, ConnectCommand.class);
-        connect(session, username, color, (ConnectCommand) command);
-      }
-      // case MAKE_MOVE -> makeMove(session, username, (MakeMoveCommand) command);
-      case LEAVE -> {
-        //gson.fromJson(msg, LeaveGameCommand.class);
-        leaveGame(session, username, (LeaveGameCommand) command);
+      case CONNECT -> connect(session, username, color, (ConnectCommand) command);
+      case MAKE_MOVE -> makeMove(session, username, (MakeMoveCommand) command);
+      case LEAVE -> leaveGame(session, username, (LeaveGameCommand) command);
       }
       // case RESIGN -> resign(session, username, (ResignCommand) command);
-    }
   }
 
   private void connect(Session session, String username, String color, ConnectCommand command) {
@@ -62,6 +53,18 @@ public class WebSocketHandler {
     sessions.add(command.getGameID(), session);
     loadGame(command.getGameID(), session, command);
     notify(username, color, command);
+    } catch (Exception e) {
+      error(session, e.getMessage());
+    }
+  }
+
+  private void makeMove(Session session, String username, MakeMoveCommand command) {
+    try {
+      GameDao gameDao = GameDaoSQL.getInstance();
+      ChessGame game = gameDao.getGame(command.getGameID()).game();
+      game.makeMove(command.getMove());
+      gameDao.makeMove(command.getGameID(), game);
+      broadcast(command.getGameID(), new LoadGameMessage(gameDao.getGame(command.getGameID()).game(), getColor(command.getGameID(), username)));
     } catch (Exception e) {
       error(session, e.getMessage());
     }

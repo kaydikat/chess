@@ -146,6 +146,21 @@ public class GameDaoSQL extends AbstractGameDao {
   }
 
   @Override
+  public void updateGame(Integer gameID, ChessGame game) throws DataAccessException {
+    String gameText = serializeGame(new GameData(gameID, null, null, null, game));
+    try (var conn = DatabaseManager.getConnection()) {
+      var statement = "UPDATE game SET game=? WHERE gameID=?";
+      try (var preparedStatement = conn.prepareStatement(statement)) {
+        preparedStatement.setString(1, gameText);
+        preparedStatement.setInt(2, gameID);
+        preparedStatement.executeUpdate();
+      }
+    } catch (SQLException e) {
+      throw new DataAccessException("Error updating game: " + e.getMessage());
+    }
+  }
+
+  @Override
   public void clear() {
     try (var conn = DatabaseManager.getConnection()) {
       var statement = "DELETE FROM game";

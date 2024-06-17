@@ -1,5 +1,7 @@
 package client;
 
+import chess.ChessPiece;
+import chess.ChessPosition;
 import com.google.gson.Gson;
 import responseexception.ResponseException;
 import model.AuthData;
@@ -9,8 +11,9 @@ import result.*;
 import http.HttpCommunicator;
 import websocket.ServerMessageObserver;
 import websocket.WebSocketCommunicator;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
-
+import chess.ChessMove;
 import java.util.Collection;
 
 public class ServerFacade {
@@ -93,6 +96,18 @@ public class ServerFacade {
   public void leaveGame(String authToken, Integer gameID) throws ResponseException {
     try {
       UserGameCommand command = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
+      String message = new Gson().toJson(command);
+      webSocketCommunicator.send(message);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public void makeMove(String authToken,Integer gameID, ChessPosition startPosition, ChessPosition endPosition,
+                       ChessPiece.PieceType promotionPiece) {
+    try {
+      ChessMove move = new ChessMove(startPosition, endPosition, promotionPiece);
+      UserGameCommand command = new MakeMoveCommand(authToken, gameID, move);
       String message = new Gson().toJson(command);
       webSocketCommunicator.send(message);
     } catch (Exception e) {
