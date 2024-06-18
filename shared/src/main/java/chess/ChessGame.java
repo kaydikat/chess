@@ -14,7 +14,7 @@ public class ChessGame {
     private ChessBoard chessBoard;
     private String whiteResigned;
     private String blackResigned;
-    private static final boolean[][] LEGAL_MOVES =new boolean[8][8];
+    private final boolean[][] legalMoves =new boolean[8][8];
 
     public ChessGame() {
         this.teamTurn = TeamColor.WHITE;
@@ -103,7 +103,7 @@ public class ChessGame {
         }
 
         for (ChessMove move : validMoves) {
-            LEGAL_MOVES[move.getEndPosition().getRow()-1][move.getEndPosition().getColumn()-1]=true;
+            legalMoves[move.getEndPosition().getRow()-1][move.getEndPosition().getColumn()-1]=true;
         }
         return validMoves;
     }
@@ -111,12 +111,12 @@ public class ChessGame {
     public void resign(){
         for (int i=0;i<8;i++){
             for (int j=0;j<8;j++){
-                LEGAL_MOVES[i][j]=false;
+                legalMoves[i][j]=false;
             }
         }
     }
-    public static boolean[][] getLegalMoves(){
-        return LEGAL_MOVES;
+    public boolean[][] getLegalMoves(){
+        return legalMoves;
     }
     /**
      * Makes a move in a chess game

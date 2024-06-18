@@ -7,10 +7,8 @@ import chess.ChessPosition;
 import chess.ChessGame;
 
 import static ui.EscapeSequences.*;
-
 public class ChessBoardUi {
   private static ChessBoard chessBoard;
-  private static final boolean[][] LEGAL_MOVES = ChessGame.getLegalMoves();
   private static final int BOARD_SIZE_IN_SQUARES = 8;
   private static final int SQUARE_SIZE_IN_CHARS = 3;
   public static boolean isFlipped = false;
@@ -77,19 +75,10 @@ public class ChessBoardUi {
     int actualCol = playerColor.equalsIgnoreCase("black") ^ isFlipped ? BOARD_SIZE_IN_SQUARES - boardCol - 1 : boardCol;
 
     ChessPiece piece = chessBoard.getPiece(new ChessPosition(actualRow + 1, actualCol + 1)); // +1 to map to 1-based positions
-
-    if (LEGAL_MOVES[actualRow][actualCol]) {
-      if (isBlack) {
-        out.print(SET_BG_COLOR_DARK_GREEN);
-      } else {
-        out.print(SET_BG_COLOR_GREEN);
-      }
+    if (isBlack) {
+      out.print(SET_BG_COLOR_WHITE);
     } else {
-      if (isBlack) {
-        out.print(SET_BG_COLOR_BLACK);
-      } else {
-        out.print(SET_BG_COLOR_WHITE);
-      }
+      out.print(SET_BG_COLOR_BLACK);
     }
 
     if (piece != null) {

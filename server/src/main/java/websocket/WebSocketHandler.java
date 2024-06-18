@@ -72,28 +72,35 @@ public class WebSocketHandler {
   private void makeMove(Session session, String username, MakeMoveCommand command) {
     try {
       ChessGame game = getGame(command.getGameID());
-        if (isGameOver(game)) {
+      if (resigned) {
         error(session, "Game is over, cannot make moves");
         return;
-        }
-      else if (!isValidTurn(command.getGameID(), username)) {
+      } else if (!isValidTurn(command.getGameID(), username)) {
         error(session, "Not your turn");
         return;
-      }
-      else if (isObserver(command.getGameID(), username)) {
+      } else if (isObserver(command.getGameID(), username)) {
         error(session, "Observers cannot make moves");
         return;
       }
       game.makeMove(command.getMove());
       GameDaoSQL.getInstance().updateGame(command.getGameID(), game);
       loadGameMakeMove(command.getGameID(), session, command);
-      notify(username, command, session);
+
+      if (game.isInCheckmate(ChessGame.TeamColor.WHITE) || game.isInCheckmate(ChessGame.TeamColor.BLACK)) {
+        String winner = game.isInCheckmate(ChessGame.TeamColor.WHITE) ? "Black" : "White";
+        ServerMessage message = new NotificationMessage("Checkmate! " + winner + " wins the game.");
+        sessions.broadcast(command.getGameID(), message);
+      } else if (game.isInStalemate(game.getTeamTurn())) {
+        ServerMessage message = new NotificationMessage("Game over! It's a stalemate.");
+        sessions.broadcast(command.getGameID(), message);
+      } else {
+        notify(username, command, session);
+      }
     } catch (InvalidMoveException e) {
       error(session, "Invalid move");
     } catch (Exception e) {
       error(session, e.getMessage());
     }
-
   }
 
   private void leaveGame(Session session, String username, LeaveGameCommand command) {
@@ -118,13 +125,14 @@ public class WebSocketHandler {
         error(session, "Game is over, cannot resign");
         return;
       }
-//      if (resigned) {
-//        error(session, "Cannot resign after your opponent has resigned");
-//        return;
-//      }
+      if (resigned) {
+        error(session, "Cannot resign after your opponent has resigned");
+        return;
+      }
 
       game.resign(username, color);
       notify(username, command, session);
+      resigned = true;
     } catch (Exception e) {
       error(session, e.getMessage());
     }
@@ -241,6 +249,5 @@ public class WebSocketHandler {
   private boolean isGameOver(ChessGame game) {
     return game.isInCheckmate(ChessGame.TeamColor.WHITE) || game.isInCheckmate(ChessGame.TeamColor.BLACK) || game.isInStalemate(game.getTeamTurn());
   }
-
 }
 
