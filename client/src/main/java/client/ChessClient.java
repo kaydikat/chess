@@ -1,8 +1,6 @@
 package client;
 
-import chess.ChessBoard;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 import responseexception.ResponseException;
 import model.GameData;
 import java.util.Arrays;
@@ -234,8 +232,37 @@ public class ChessClient {
         }
         return colMap;
     }
-    public String highlight(String... params) {
-        return null;
+    public String highlight(String... params) throws ClientException {
+        if (state != State.GAME_STATE) {
+            throw new ClientException("You must be in a game to highlight moves");
+        }
+        if (params.length != 1) {
+            throw new ClientException("Highlight requires 1 parameter: <start>");
+        }
+
+        String start = params[0];
+        ChessPosition startPosition = parsePosition(start);
+
+        try {
+            ChessGame game = gameData.game();
+            Collection<ChessMove> validMoves = game.validMoves(startPosition);
+
+            if (validMoves.isEmpty()) {
+                return "No legal moves for the selected piece.";
+            }
+
+            // Update the UI to highlight the legal moves
+            ChessBoardUi chessBoardUi = new ChessBoardUi(game.getBoard());
+            chessBoardUi.drawBoard(System.out, getColorOfCurrentPlayer());
+
+            return "Highlighted legal moves for the piece at " + start;
+        } catch (Exception e) {
+            return "An error occurred while highlighting moves: " + e.getMessage();
+        }
+    }
+
+    private String getColorOfCurrentPlayer() {
+        return gameData.whiteUsername().equals(authData.username()) ? "white" : "black";
     }
     public String resign() {
         try {

@@ -15,6 +15,7 @@ import static ui.EscapeSequences.*;
 public class Repl implements ServerMessageObserver {
   private Gson gson;
   private final ChessClient client;
+  Integer turnsCounter = 0;
 
   public Repl(String serverUrl) throws Exception {
     client = new ChessClient(serverUrl, this);
@@ -68,12 +69,25 @@ public class Repl implements ServerMessageObserver {
   private void loadGame(ChessGame game, String playerColor) {
     ChessBoard board=game.getBoard();
     ChessBoardUi chessBoardUi=new ChessBoardUi(board);
-    if (playerColor.equalsIgnoreCase("WHITE")) {
-      chessBoardUi.drawBoard(System.out, "white");
+    System.out.println();
+    if (turnsCounter % 2 == 0) {
+      if (playerColor.equalsIgnoreCase("WHITE") || playerColor == null || playerColor.equalsIgnoreCase("observer")) {
+        chessBoardUi.drawBoard(System.out, "white");
+      }
+      else if (playerColor.equalsIgnoreCase("BLACK")) {
+        chessBoardUi.flipBoard();
+        chessBoardUi.drawBoard(System.out, "white");
+      }
     } else {
-      chessBoardUi.flipBoard();
-      chessBoardUi.drawBoard(System.out, "white");
+      if (playerColor.equalsIgnoreCase("BLACK")) {
+        chessBoardUi.drawBoard(System.out, "white");
+      }
+      if (playerColor.equalsIgnoreCase("WHITE") || playerColor == null || playerColor.equalsIgnoreCase("observer")) {
+        chessBoardUi.flipBoard();
+        chessBoardUi.drawBoard(System.out, "white");
+      }
     }
+    turnsCounter += 1;
   }
 
 

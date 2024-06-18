@@ -72,10 +72,10 @@ public class WebSocketHandler {
   private void makeMove(Session session, String username, MakeMoveCommand command) {
     try {
       ChessGame game = getGame(command.getGameID());
-      if (resigned) {
+        if (isGameOver(game)) {
         error(session, "Game is over, cannot make moves");
         return;
-      }
+        }
       else if (!isValidTurn(command.getGameID(), username)) {
         error(session, "Not your turn");
         return;
@@ -118,14 +118,13 @@ public class WebSocketHandler {
         error(session, "Game is over, cannot resign");
         return;
       }
-      if (resigned) {
-        error(session, "Cannot resign after your opponent has resigned");
-        return;
-      }
+//      if (resigned) {
+//        error(session, "Cannot resign after your opponent has resigned");
+//        return;
+//      }
 
       game.resign(username, color);
       notify(username, command, session);
-      resigned = true;
     } catch (Exception e) {
       error(session, e.getMessage());
     }
